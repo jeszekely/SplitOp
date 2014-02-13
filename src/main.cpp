@@ -16,6 +16,7 @@
 #include "junction_hamiltonian.h"
 #include "imag_time_prop.h"
 #include "quantum_dynamics.h"
+#include <mkl.h>
 
 using namespace std;
 
