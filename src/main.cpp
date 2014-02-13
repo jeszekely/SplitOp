@@ -16,7 +16,6 @@
 #include "junction_hamiltonian.h"
 #include "imag_time_prop.h"
 #include "quantum_dynamics.h"
-#include <mkl.h>
 
 using namespace std;
 
@@ -100,7 +99,7 @@ int main () {
 	Out_Param.FluxInt 		= iniparser_getint(ini, "Outputs:FluxInt", 0);
 	Out_Param.Correlation 	= iniparser_getint(ini, "Outputs:Correlation", 0);
 	Out_Param.FullWvfxn 	= iniparser_getint(ini, "Outputs:FullWvfxn", 0);
-	Out_Param.Cnm 			= iniparser_getint(ini, "Outputs:Cnm",0); 
+	Out_Param.Cnm 			= iniparser_getint(ini, "Outputs:Cnm",0);
 
     iniparser_freedict(ini);
 
@@ -607,7 +606,7 @@ int main () {
 	ofstream FluxRFile;
 	ofstream FluxLFile;
 	ofstream WvfxnOut;
-	ofstream CnmOut; 
+	ofstream CnmOut;
 
 	if (Out_Param.Energy != 0)
 	{
@@ -666,15 +665,15 @@ int main () {
 	if (Out_Param.Cnm != 0)
 	{
 		CnmOut.open("output_data/Cnm.txt");
-		CnmOut << "#"; 
+		CnmOut << "#";
 		for (ii = 0; ii < ElecStates.n; ii++)
 		{
 			for (jj = 0; jj < MolecStates.n; jj++)
 			{
-				CnmOut << "C" << ii << jj << " ";  
+				CnmOut << "C" << ii << jj << " ";
 			}
 		}
-		CnmOut << endl; 
+		CnmOut << endl;
 	}
 /****************************************************************
 	Primary calculation loop, steps a wavefunction forward in time
@@ -815,7 +814,7 @@ int main () {
 		{
 			if (tindex % Out_Param.Cnm == 0)
 			{
-				CnmOut << Wvfxn.time; 
+				CnmOut << Wvfxn.time;
 				for (ii = 0; ii < ElecStates.n; ii++)
 				{
 					for (jj = 0; jj < MolecStates.n; jj++)
@@ -823,7 +822,7 @@ int main () {
 						CnmOut << " " << abs(get_junction_Cnm(Wvfxn,ElecStates,MolecStates,Junction_Limits,jj,ii,JL,Scratch));
 					}
 				}
-				CnmOut << endl; 
+				CnmOut << endl;
 			}
 		}
 //	Step the wavefunction and time parameters
