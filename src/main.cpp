@@ -7,14 +7,13 @@
 #include "arrays.hpp"
 
 using namespace std;
-
 int main(int argc, char const *argv[])
 {
   Array1D <double> A(100,0,0);
   for (int ii = 0; ii<A.Nx(); ii++)
     A(ii) = -10.0;
   cout << A.integrate_rect() << endl;
-  Array1D <double> X(100,0,0.5);
+  Array1D  <double> X(100,0,0.5);
   X.fill_array();
   cout << A << X;
   Array1D <double> Y(X);
