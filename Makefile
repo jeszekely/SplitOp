@@ -1,5 +1,5 @@
-# Density Matrix Renormalization Group (DMRG) Code
-# Authors J. Szekely, B. Ashwell and S. Parker
+# Split Operator Code
+# Author J. Szekely
 # Makefile
 
 CC = g++

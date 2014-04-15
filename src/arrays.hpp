@@ -1,6 +1,5 @@
 #ifndef SPLITOP_ARRAYS
 #define SPLITOP_ARRAYS
-
 #include <memory>
 #include <algorithm>
 #include <iostream>
@@ -42,6 +41,9 @@ public:
 
 //  Fill with zeroes
   void zero() {std::fill_n(vals.get(), nx, T(0.0));}
+
+//  Fill with a number
+  void fill(T a) {std::fill_n(vals.get(), nx, a);}
 
 	size_t Nx() const {return nx;}
 
@@ -85,6 +87,12 @@ public:
   template <typename U> void scale(const U a)
   {
     std::for_each(data(), data()+size(), [&a](T& p){p*=a;});
+  }
+
+//  Add a value to all elements
+  template <typename U> void addVal(const U a)
+  {
+    std::for_each(data(), data()+size(), [&a](T& p){p+=a;});
   }
 
 //  Print memory usage for all matrices
@@ -202,8 +210,8 @@ public:
 
   // T deriv_24(const int xx)
 
-  //2nd derivative, 6th order accuracy
-  T deriv_26(const int xx)
+  //2nd derivative, 4th order accuracy
+  T deriv_24(const int xx)
   {
   	T deriv;
   	if (xx < 3)
@@ -218,8 +226,14 @@ public:
 
   T integrate_rect()
   {
-  	return std::accumulate(data(),data()+size(),0.0);
+  	return xstep*std::accumulate(data(),data()+size(),0.0);
   }
+
+  T integrate_rect(const int xL, const int xU)
+  {
+    return xstep*std::accumulate(data()+xL,data()+xL+xU,0.0);
+  }
+
   // T integrate_trap()
   // T integrate_simp()
 
@@ -253,7 +267,7 @@ template <class T>
 void print1D(int nn, std::ostream &out,T& o)
 {
 	out << o(nn) << "\t";
-}
+};
 
 template <class A, class... B>
 void print1D(int nn, std::ostream &out, A head, B... tail)
@@ -261,7 +275,7 @@ void print1D(int nn, std::ostream &out, A head, B... tail)
 	print1D(nn,out,head);
 	print1D(nn,out,tail...);
 	out << std::endl;
-}
+};
 
 template <class A, class... B>
 void printArrays(int nn, std::ostream &out, A head, B... tail)
@@ -272,45 +286,16 @@ void printArrays(int nn, std::ostream &out, A head, B... tail)
 		print1D(ii,out,tail...);
 		out << std::endl;
 	}
-}
+};
 
 template <typename T> unsigned int Array1D<T>::memSize = 0;
 
 
+/***********************************
 
+Begin 2D Array class definitions
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+************************************/
 
 template <typename T> class Array2D
 {
@@ -323,19 +308,19 @@ protected:
 
 public:
 //  Constructor
-  Array2D(const int NX, const int NY, T xs, T ys) : nx(NX), xstep(xs), ystep(ys), vals(std::unique_ptr<T[]>(new T[NX,NY]))
+  Array2D(const int NX, const int NY, T xs, T ys) : nx(NX), ny(NY), xstep(xs), ystep(ys), vals(std::unique_ptr<T[]>(new T[NX*NY]))
   {
     zero();
     memSize += sizeof(T)*size(); //number of bytes allocated to instance of class
   }
 //  Copy Constructor
-  Array2D(const Array2D& o) : nx(o.nx), ny(o.ny), xstep(o.xstep), ystep(o.ystep), vals(std::unique_ptr<T[]>(new T[nx,ny]))
+  Array2D(const Array2D& o) : nx(o.nx), ny(o.ny), xstep(o.xstep), ystep(o.ystep), vals(std::unique_ptr<T[]>(new T[nx*ny]))
   {
     std::copy_n(o.vals.get(), nx*ny, vals.get());
     memSize += sizeof(T)*size(); //number of bytes allocated to instance of class
   }
   //  Move Constructor
-  Array2D(Array2D&& o) : nx(o.nx), ny(o.ny), xstep(o.xstep), ystep(o.ystep), vals(std::move(o.vals)) {o.nx = o.ny = 0;};
+  Array2D(Array2D&& o) : nx(o.nx), ny(o.ny), xstep(o.xstep), ystep(o.ystep), vals(std::move(o.vals)) {o.nx = 0; o.ny = 0;};
 
 //  Destructor
   ~Array2D(){memSize -= sizeof(T)*size();} //number of bytes allocated to instance of class
@@ -348,6 +333,9 @@ public:
 //  Fill with zeroes
   void zero() {std::fill_n(vals.get(), nx*ny, T(0.0));}
 
+//  Fill with a number
+  void fill(T a) {std::fill_n(vals.get(), nx*ny, a);}
+
   size_t Nx() const {return nx;}
   size_t Ny() const {return ny;}
 
@@ -358,8 +346,6 @@ public:
     std::uniform_real_distribution<T> dis(-2, 2);
     std::generate_n(vals.get(), nx*ny, [&dis, &gen](){return dis(gen);});
   }
-
-
 
 //  Accessor functions
   T& element(const int xx, const int yy)
@@ -386,6 +372,12 @@ public:
   template <typename U> void scale(const U a)
   {
     std::for_each(data(), data()+size(), [&a](T& p){p*=a;});
+  }
+
+//  Add a value to all elements
+  template <typename U> void addVal(const U a)
+  {
+    std::for_each(data(), data()+size(), [&a](T& p){p+=a;});
   }
 
 //  Print memory usage for all matrices
@@ -416,84 +408,72 @@ public:
     return;
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Array-Array operations
-  template <typename U> Array1D operator*(const Array1D<U>& o) const
+//element by element operations
+  template <typename U> Array2D operator*(const Array2D<U>& o) const
   {
-    assert(nx == o.nx);
-    Array1D<T> out(*this);
+    assert(nx == o.nx && ny == o.ny);
+    Array2D<T> out(*this);
     std::transform(out.data(), out.data()+out.size(), o.data(), std::multiplies<T>());
     return out;
   }
-  template <typename U> Array1D& operator*=(const Array1D<U>& o)
+
+  template <typename U> Array2D& operator*=(const Array2D<U>& o)
   {
     *this = *this * o;
     return *this;
   }
 
-  template <typename U> Array1D operator/(const Array1D<U>& o) const
+  template <typename U> Array2D operator/(const Array2D<U>& o) const
   {
-    assert(nx == o.nx);
-    Array1D<T> out(*this);
+    assert(nx == o.nx && ny == o.ny);
+    Array2D<T> out(*this);
     std::transform(out.data(), out.data()+out.size(), o.data(), std::divides<T>());
     return out;
   }
-  template <typename U> Array1D& operator/=(const Array1D<U>& o)
+  template <typename U> Array2D& operator/=(const Array2D<U>& o)
   {
     *this = *this / o;
     return *this;
   }
 
-  template <typename U> Array1D operator+(const Array1D<U>& o) const
+  template <typename U> Array2D operator+(const Array2D<U>& o) const
   {
-    assert(nx == o.nx);
-    Array1D<T> out(*this);
+    assert(nx == o.nx && ny == o.ny);
+    Array2D<T> out(*this);
     std::transform(out.data(), out.data()+out.size(), o.data(), std::plus<T>());
     return out;
   }
-  template <typename U> Array1D& operator+=(const Array1D<U>& o)
+  template <typename U> Array2D& operator+=(const Array2D<U>& o)
   {
     *this = *this + o;
     return *this;
   }
 
-  template <typename U> Array1D operator-(const Array1D<U>& o) const
+  template <typename U> Array2D operator-(const Array2D<U>& o) const
   {
-    assert(nx == o.nx);
-    Array1D<T> out(*this);
+    assert(nx == o.nx && ny == o.ny);
+    Array2D<T> out(*this);
     std::transform(out.data(), out.data()+out.size(), o.data(), std::minus<T>());
     return out;
   }
-  template <typename U> Array1D& operator-=(const Array1D<U>& o)
+
+  template <typename U> Array2D& operator-=(const Array2D<U>& o)
   {
     *this = *this - o;
     return *this;
   }
 
 //Scalar-Array Operations
-  template <typename U> Array1D operator*(const U& a) const
+  template <typename U> Array2D operator*(const U& a) const
   {
-    Array1D<T> out(*this);
+    Array2D<T> out(*this);
     out *= a;
     return out;
   }
 
-  template <typename U> Array1D operator/(const U& a) const
+  template <typename U> Array2D operator/(const U& a) const
   {
-    Array1D<T> out(*this);
+    Array2D<T> out(*this);
     out /= a;
     return out;
   }
@@ -502,16 +482,29 @@ public:
 
   // T deriv_14(const int xx)
 
-  //1st derivative, 6th order accuracy
-  T deriv_16(const int xx)
+  // 1st derivative, 6th order accuracy, x direction
+  T deriv_16_x(const int xx, const int yy)
   {
     T deriv;
     if (xx < 3)
-      deriv = (1/(12*xstep))*(-25*vals[xx] + 48*vals[xx+1]-36*vals[xx+2]+16*vals[xx+3]-3*vals[xx+4]);
+      deriv = (1/(12*xstep))*(-25*element(xx,yy) + 48*element(xx+1,yy)-36*element(xx+2,yy)+16*element(xx+3,yy)-3*element(xx+4,yy));
     else if (xx > nx-4)
-      deriv = (1/(12.0*xstep))*(25.0*vals[xx]-48.0*vals[xx-1]+36.0*vals[xx-2]-16.0*vals[xx-3]+3.0*vals[xx-4]);
+      deriv = (1/(12.0*xstep))*(25.0*element(xx,yy)-48.0*element(xx-1,yy)+36.0*element(xx-2,yy)-16.0*element(xx-3,yy)+3.0*element(xx-4,yy));
     else
-      deriv = (1.0/(60*xstep))*(-1.0*vals[xx-3] + 9.0*vals[xx-2] - 45.0*vals[xx-1] + 45.0*vals[xx+1] - 9.0*vals[xx+2] + 1.0*vals[xx+3]);
+      deriv = (1.0/(60*xstep))*(-1.0*element(xx-3,yy) + 9.0*element(xx-2,yy) - 45.0*element(xx-1,yy) + 45.0*element(xx+1,yy) - 9.0*element(xx+2,yy) + 1.0*element(xx+3,yy));
+    return deriv;
+  }
+
+  // 1st derivative, 6th order accuracy, y direction
+  T deriv_16_y(const int xx, const int yy)
+  {
+    T deriv;
+    if (yy < 3)
+      deriv = (1/(12*ystep))*(-25*element(xx,yy) + 48*element(xx,yy+1)-36*element(xx,yy+2)+16*element(xx,yy+3)-3*element(xx,yy+4));
+    else if (yy > ny-4)
+      deriv = (1/(12.0*ystep))*(25.0*element(xx,yy)-48.0*element(xx,yy-1)+36.0*element(xx,yy-2)-16.0*element(xx,yy-3)+3.0*element(xx,yy-4));
+    else
+      deriv = (1.0/(60*ystep))*(-1.0*element(xx,yy-3) + 9.0*element(xx,yy-2) - 45.0*element(xx,yy-1) + 45.0*element(xx,yy+1) - 9.0*element(xx,yy+2) + 1.0*element(xx,yy+3));
     return deriv;
   }
 
@@ -519,77 +512,68 @@ public:
 
   // T deriv_24(const int xx)
 
-  //2nd derivative, 6th order accuracy
-  T deriv_26(const int xx)
+  //2nd derivative, 4th order accuracy
+  T deriv_24_xx(const int xx, const int yy)
   {
     T deriv;
     if (xx < 3)
-      deriv = (1.0/(12*xstep*xstep))*(45*vals[xx] - 154*vals[xx+1] + 214*vals[xx+2] - 156*vals[xx+3] + 61*vals[xx+4] - 10*vals[xx+5]);
+      deriv = (1.0/(12*xstep*xstep))*(45*element(xx,yy) - 154*element(xx+1,yy) + 214*element(xx+2,yy) - 156*element(xx+3,yy) + 61*element(xx+4,yy) - 10*element(xx+5,yy));
     else if (xx > nx-4)
-      deriv = (1.0/(12*xstep*xstep))*(45*vals[xx] - 154*vals[xx-1] + 214*vals[xx-2] - 156*vals[xx-3] + 61*vals[xx-4] - 10*vals[xx-5]);
+      deriv = (1.0/(12*xstep*xstep))*(45*element(xx,yy) - 154*element(xx-1,yy) + 214*element(xx-2,yy) - 156*element(xx-3,yy) + 61*element(xx-4,yy) - 10*element(xx-5,yy));
     else
-      deriv = (1.0/(180*xstep*xstep))*(2*vals[xx-3] - 27*vals[xx-2] + 270*vals[xx-1] - 490*vals[xx] + 270*vals[xx+1] - 27*vals[xx+2] + 2*vals[xx+3]);
+      deriv = (1.0/(180*xstep*xstep))*(2*element(xx-3,yy) - 27*element(xx-2,yy) + 270*element(xx-1,yy) - 490*element(xx,yy) + 270*element(xx+1,yy) - 27*element(xx+2,yy) + 2*element(xx+3,yy));
+    return deriv;
+  }
+
+  T deriv_24_yy(const int xx, const int yy)
+  {
+    T deriv;
+    if (yy < 3)
+      deriv = (1.0/(12*ystep*ystep))*(45*element(xx,yy) - 154*element(xx,yy+1) + 214*element(xx,yy+2) - 156*element(xx,yy+3) + 61*element(xx,yy+4) - 10*element(xx,yy+5));
+    else if (yy > ny-4)
+      deriv = (1.0/(12*ystep*ystep))*(45*element(xx,yy) - 154*element(xx,yy-1) + 214*element(xx,yy-2) - 156*element(xx,yy-3) + 61*element(xx,yy-4) - 10*element(xx,yy-5));
+    else
+      deriv = (1.0/(180*ystep*ystep))*(2*element(xx,yy-3) - 27*element(xx,yy-2) + 270*element(xx,yy-1) - 490*element(xx,yy) + 270*element(xx,yy+1) - 27*element(xx,yy+2) + 2*element(xx,yy+3));
     return deriv;
   }
   // T deriv_28(const int xx)
 
+
   T integrate_rect()
   {
-    return std::accumulate(data(),data()+size(),0.0);
+    return xstep*ystep*std::accumulate(data(),data()+size(),0.0);
   }
+
+  T integrate_rect(const int xL, const int xU, const int yL, const int yU)
+  {
+    T sum = 0;
+    for (int ii = yL; ii < yU; ii++)
+      sum += std::accumulate(&element(xL,ii),&element(xL+xU,ii),0.0);
+    return xstep*ystep*sum;
+  }
+
   // T integrate_trap()
   // T integrate_simp()
 
-  template <typename U> friend std::ostream &operator<<(std::ostream &out, const Array1D <U> &o);
+  template <typename U> friend std::ostream &operator<<(std::ostream &out, const Array2D <U> &o);
 
-  template <typename... Args> friend void print1D(std::ostream &out, const Args&... o);
 };
 
 //Overload the << operator to print a matrix
 template <typename T>
-std::ostream &operator<<(std::ostream &out, const Array1D <T> &o)
+std::ostream &operator<<(std::ostream &out, const Array2D <T> &o)
 {
-  if (o.nx < 10)
+  for (int row = 0; row < std::min(10,int(o.nx)); row++)
   {
-    for (int elem = 0; elem < o.nx; elem++)
-      out << std::setprecision(3) << o(elem) << "\t";
-  }
-  else
-  {
-    for (int elem = 0; elem < 5; elem++)
-      out << std::setprecision(3) << o(elem) << "\t";
-    out << "...\t";
-    for (int elem = o.nx-5; elem < o.nx; elem++)
-      out << std::setprecision(3) << o(elem) << "\t";
+    for (int col = 0; col < std::min(10,int(o.ny)); col++)
+    {
+      out << std::setprecision(3) << o(row,col) << "\t";
+    }
+    out << "\n";
   }
   out << std::endl;
   return out;
 };
 
-template <class T>
-void print1D(int nn, std::ostream &out,T& o)
-{
-  out << o(nn) << "\t";
-}
-
-template <class A, class... B>
-void print1D(int nn, std::ostream &out, A head, B... tail)
-{
-  print1D(nn,out,head);
-  print1D(nn,out,tail...);
-  out << std::endl;
-}
-
-template <class A, class... B>
-void printArrays(int nn, std::ostream &out, A head, B... tail)
-{
-  for (int ii = 0; ii<nn; ii++)
-  {
-    print1D(ii,out,head);
-    print1D(ii,out,tail...);
-    out << std::endl;
-  }
-}
-
-template <typename T> unsigned int Array1D<T>::memSize = 0;
+template <typename T> unsigned int Array2D<T>::memSize = 0;
 #endif

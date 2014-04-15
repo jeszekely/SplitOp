@@ -31,5 +31,13 @@ int main(int argc, char const *argv[])
   cout << A << endl << A.getSub(0,4);
 
   printArrays(10,cout,A,X);
+  cout << endl;
+  Array2D <float> AA(20,20,0.1,0.1);
+  AA.zero();
+  cout << AA;
+  AA.fill(1.0);
+  cout << AA << AA.getSub(0,0,3,3);
+  cout << AA.integrate_rect() << endl;
+
   return(0);
 }
