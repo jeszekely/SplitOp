@@ -11,11 +11,11 @@ CFLAGS = -O3 -I$(MKLROOT)/include -Wall -Wno-sign-compare -Wno-unused-function -
 
 BOOST_INC = -I/opt/local/include/
 
-OBJ  =   obj/main.o
+OBJ  =   obj/main.o obj/wvfxn.o
 
 LIBS =  -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lmkl_sequential -lpthread -lm
 
-HEADS =  src/arrays.hpp
+HEADS =  src/arrays.hpp src/wvfxn.hpp
 BIN  =   SplitOp
 
 RM = rm -f
@@ -31,3 +31,6 @@ $(BIN): $(OBJ)
 
 obj/main.o: src/main.cpp
 	$(CC) $(CFLAGS) -c  src/main.cpp -o obj/main.o $(BOOST_INC) -I./src
+
+obj/wvfxn.o: src/wvfxn.cpp
+	$(CC) $(CFLAGS) -c  src/wvfxn.cpp -o obj/wvfxn.o $(BOOST_INC) -I./src

@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <assert.h>
 #include <random>
+#include <complex>
 
 template <typename T> class Array1D
 {
