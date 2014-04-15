@@ -199,11 +199,11 @@ public:
   {
   	T deriv;
   	if (xx < 3)
-  		deriv = (1/(12*xstep))*(-25*vals[xx] + 48*vals[xx+1]-36*vals[xx+2]+16*vals[xx+3]-3*vals[xx+4]);
+  		deriv = (1.0/(12.0*xstep))*(-25.0*vals[xx] + 48.0*vals[xx+1]-36.0*vals[xx+2]+16.0*vals[xx+3]-3.0*vals[xx+4]);
   	else if (xx > nx-4)
-  		deriv = (1/(12.0*xstep))*(25.0*vals[xx]-48.0*vals[xx-1]+36.0*vals[xx-2]-16.0*vals[xx-3]+3.0*vals[xx-4]);
+  		deriv = (1.0/(12.0*xstep))*(25.0*vals[xx]-48.0*vals[xx-1]+36.0*vals[xx-2]-16.0*vals[xx-3]+3.0*vals[xx-4]);
 		else
-			deriv = (1.0/(60*xstep))*(-1.0*vals[xx-3] + 9.0*vals[xx-2] - 45.0*vals[xx-1] + 45.0*vals[xx+1] - 9.0*vals[xx+2] + 1.0*vals[xx+3]);
+			deriv = (1.0/(60.0*xstep))*(-1.0*vals[xx-3] + 9.0*vals[xx-2] - 45.0*vals[xx-1] + 45.0*vals[xx+1] - 9.0*vals[xx+2] + 1.0*vals[xx+3]);
 		return deriv;
   }
 
@@ -216,23 +216,23 @@ public:
   {
   	T deriv;
   	if (xx < 3)
-			deriv = (1.0/(12*xstep*xstep))*(45*vals[xx] - 154*vals[xx+1] + 214*vals[xx+2] - 156*vals[xx+3] + 61*vals[xx+4] - 10*vals[xx+5]);
+			deriv = (1.0/(12.0*xstep*xstep))*(45.0*vals[xx] - 154.0*vals[xx+1] + 214.0*vals[xx+2] - 156.0*vals[xx+3] + 61.0*vals[xx+4] - 10.0*vals[xx+5]);
 		else if (xx > nx-4)
-			deriv = (1.0/(12*xstep*xstep))*(45*vals[xx] - 154*vals[xx-1] + 214*vals[xx-2] - 156*vals[xx-3] + 61*vals[xx-4] - 10*vals[xx-5]);
+			deriv = (1.0/(12.0*xstep*xstep))*(45.0*vals[xx] - 154.0*vals[xx-1] + 214.0*vals[xx-2] - 156.0*vals[xx-3] + 61.0*vals[xx-4] - 10.0*vals[xx-5]);
 		else
-			deriv = (1.0/(180*xstep*xstep))*(2*vals[xx-3] - 27*vals[xx-2] + 270*vals[xx-1] - 490*vals[xx] + 270*vals[xx+1] - 27*vals[xx+2] + 2*vals[xx+3]);
+			deriv = (1.0/(180.0*xstep*xstep))*(2.0*vals[xx-3] - 27.0*vals[xx-2] + 270.0*vals[xx-1] - 490.0*vals[xx] + 270.0*vals[xx+1] - 27.0*vals[xx+2] + 2.0*vals[xx+3]);
 		return deriv;
 	}
   // T deriv_28(const int xx)
 
   T integrate_rect()
   {
-  	return xstep*std::accumulate(data(),data()+size(),0.0);
+  	return xstep*std::accumulate(data(),data()+size(),T(0.0));
   }
 
   T integrate_rect(const int xL, const int xU)
   {
-    return xstep*std::accumulate(data()+xL,data()+xL+xU,0.0);
+    return xstep*std::accumulate(data()+xL,data()+xL+xU,T(0.0));
   }
 
   // T integrate_trap()
@@ -488,11 +488,11 @@ public:
   {
     T deriv;
     if (xx < 3)
-      deriv = (1/(12*xstep))*(-25*element(xx,yy) + 48*element(xx+1,yy)-36*element(xx+2,yy)+16*element(xx+3,yy)-3*element(xx+4,yy));
+      deriv = (1.0/(12.0*xstep))*(-25.0*element(xx,yy) + 48.0*element(xx+1,yy)-36.0*element(xx+2,yy)+16.0*element(xx+3,yy)-3.0*element(xx+4,yy));
     else if (xx > nx-4)
-      deriv = (1/(12.0*xstep))*(25.0*element(xx,yy)-48.0*element(xx-1,yy)+36.0*element(xx-2,yy)-16.0*element(xx-3,yy)+3.0*element(xx-4,yy));
+      deriv = (1.0/(12.0*xstep))*(25.0*element(xx,yy)-48.0*element(xx-1,yy)+36.0*element(xx-2,yy)-16.0*element(xx-3,yy)+3.0*element(xx-4,yy));
     else
-      deriv = (1.0/(60*xstep))*(-1.0*element(xx-3,yy) + 9.0*element(xx-2,yy) - 45.0*element(xx-1,yy) + 45.0*element(xx+1,yy) - 9.0*element(xx+2,yy) + 1.0*element(xx+3,yy));
+      deriv = (1.0/(60.0*xstep))*(-1.0*element(xx-3,yy) + 9.0*element(xx-2,yy) - 45.0*element(xx-1,yy) + 45.0*element(xx+1,yy) - 9.0*element(xx+2,yy) + 1.0*element(xx+3,yy));
     return deriv;
   }
 
@@ -501,11 +501,11 @@ public:
   {
     T deriv;
     if (yy < 3)
-      deriv = (1/(12*ystep))*(-25*element(xx,yy) + 48*element(xx,yy+1)-36*element(xx,yy+2)+16*element(xx,yy+3)-3*element(xx,yy+4));
+      deriv = (1.0/(12.0*ystep))*(-25.0*element(xx,yy) + 48.0*element(xx,yy+1)-36.0*element(xx,yy+2)+16.0*element(xx,yy+3)-3.0*element(xx,yy+4));
     else if (yy > ny-4)
-      deriv = (1/(12.0*ystep))*(25.0*element(xx,yy)-48.0*element(xx,yy-1)+36.0*element(xx,yy-2)-16.0*element(xx,yy-3)+3.0*element(xx,yy-4));
+      deriv = (1.0/(12.0*ystep))*(25.0*element(xx,yy)-48.0*element(xx,yy-1)+36.0*element(xx,yy-2)-16.0*element(xx,yy-3)+3.0*element(xx,yy-4));
     else
-      deriv = (1.0/(60*ystep))*(-1.0*element(xx,yy-3) + 9.0*element(xx,yy-2) - 45.0*element(xx,yy-1) + 45.0*element(xx,yy+1) - 9.0*element(xx,yy+2) + 1.0*element(xx,yy+3));
+      deriv = (1.0/(60.0*ystep))*(-1.0*element(xx,yy-3) + 9.0*element(xx,yy-2) - 45.0*element(xx,yy-1) + 45.0*element(xx,yy+1) - 9.0*element(xx,yy+2) + 1.0*element(xx,yy+3));
     return deriv;
   }
 
@@ -518,11 +518,11 @@ public:
   {
     T deriv;
     if (xx < 3)
-      deriv = (1.0/(12*xstep*xstep))*(45*element(xx,yy) - 154*element(xx+1,yy) + 214*element(xx+2,yy) - 156*element(xx+3,yy) + 61*element(xx+4,yy) - 10*element(xx+5,yy));
+      deriv = (1.0/(12.0*xstep*xstep))*(45.0*element(xx,yy) - 154.0*element(xx+1,yy) + 214.0*element(xx+2,yy) - 156.0*element(xx+3,yy) + 61.0*element(xx+4,yy) - 10.0*element(xx+5,yy));
     else if (xx > nx-4)
-      deriv = (1.0/(12*xstep*xstep))*(45*element(xx,yy) - 154*element(xx-1,yy) + 214*element(xx-2,yy) - 156*element(xx-3,yy) + 61*element(xx-4,yy) - 10*element(xx-5,yy));
+      deriv = (1.0/(12.0*xstep*xstep))*(45.0*element(xx,yy) - 154.0*element(xx-1,yy) + 214.0*element(xx-2,yy) - 156.0*element(xx-3,yy) + 61.0*element(xx-4,yy) - 10.0*element(xx-5,yy));
     else
-      deriv = (1.0/(180*xstep*xstep))*(2*element(xx-3,yy) - 27*element(xx-2,yy) + 270*element(xx-1,yy) - 490*element(xx,yy) + 270*element(xx+1,yy) - 27*element(xx+2,yy) + 2*element(xx+3,yy));
+      deriv = (1.0/(180.0*xstep*xstep))*(2.0*element(xx-3,yy) - 27.0*element(xx-2,yy) + 270.0*element(xx-1,yy) - 490.0*element(xx,yy) + 270.0*element(xx+1,yy) - 27.0*element(xx+2,yy) + 2.0*element(xx+3,yy));
     return deriv;
   }
 
@@ -530,11 +530,11 @@ public:
   {
     T deriv;
     if (yy < 3)
-      deriv = (1.0/(12*ystep*ystep))*(45*element(xx,yy) - 154*element(xx,yy+1) + 214*element(xx,yy+2) - 156*element(xx,yy+3) + 61*element(xx,yy+4) - 10*element(xx,yy+5));
+      deriv = (1.0/(12.0*ystep*ystep))*(45.0*element(xx,yy) - 154.0*element(xx,yy+1) + 214.0*element(xx,yy+2) - 156.0*element(xx,yy+3) + 61.0*element(xx,yy+4) - 10.0*element(xx,yy+5));
     else if (yy > ny-4)
-      deriv = (1.0/(12*ystep*ystep))*(45*element(xx,yy) - 154*element(xx,yy-1) + 214*element(xx,yy-2) - 156*element(xx,yy-3) + 61*element(xx,yy-4) - 10*element(xx,yy-5));
+      deriv = (1.0/(12.0*ystep*ystep))*(45.0*element(xx,yy) - 154.0*element(xx,yy-1) + 214.0*element(xx,yy-2) - 156.0*element(xx,yy-3) + 61.0*element(xx,yy-4) - 10.0*element(xx,yy-5));
     else
-      deriv = (1.0/(180*ystep*ystep))*(2*element(xx,yy-3) - 27*element(xx,yy-2) + 270*element(xx,yy-1) - 490*element(xx,yy) + 270*element(xx,yy+1) - 27*element(xx,yy+2) + 2*element(xx,yy+3));
+      deriv = (1.0/(180*ystep*ystep))*(2.0*element(xx,yy-3) - 27.0*element(xx,yy-2) + 270.0*element(xx,yy-1) - 490.0*element(xx,yy) + 270.0*element(xx,yy+1) - 27.0*element(xx,yy+2) + 2.0*element(xx,yy+3));
     return deriv;
   }
   // T deriv_28(const int xx)
@@ -542,14 +542,14 @@ public:
 
   T integrate_rect()
   {
-    return xstep*ystep*std::accumulate(data(),data()+size(),0.0);
+    return xstep*ystep*std::accumulate(data(),data()+size(),T(0.0));
   }
 
   T integrate_rect(const int xL, const int xU, const int yL, const int yU)
   {
     T sum = 0;
     for (int ii = yL; ii < yU; ii++)
-      sum += std::accumulate(&element(xL,ii),&element(xL+xU,ii),0.0);
+      sum += std::accumulate(&element(xL,ii),&element(xL+xU,ii),T(0.0));
     return xstep*ystep*sum;
   }
 

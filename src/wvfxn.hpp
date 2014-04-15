@@ -14,6 +14,7 @@ private:
   double hbar;
 public:
   wvfxn1D(const int, const double, const double);
+  wvfxn1D(const int, const cplx, const cplx);
   wvfxn1D(const wvfxn1D&);
   wvfxn1D(wvfxn1D&&);
 
@@ -38,6 +39,7 @@ private:
   double hbar;
 public:
   wvfxn2D(const int, const int, const double, const double);
+  wvfxn2D(const int, const int, const cplx, const cplx);
   wvfxn2D(const wvfxn2D&);
   wvfxn2D(wvfxn2D&&);
 
@@ -51,7 +53,7 @@ public:
     assert (o.Nx() == nx && o.Ny() == ny);
     wvfxn2D out(o.Nx(),o.Ny(),xstep,ystep);
     for (int ii = 0; ii < out.Nx()*out.Ny(); ii++)
-      out(ii) = std::conj(vals[ii])*o(ii);
+      out.vals[ii] = std::conj(vals[ii])*o.vals[ii];
     return out;
   };
 
