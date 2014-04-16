@@ -1,0 +1,67 @@
+{
+	"CompCell" : {
+		"Procs"  : 4,
+		"Xmin"   : -450,
+		"Xmax"   : 300,
+		"Ymin"   : 5,
+		"Ymax"   : 25,
+		"Nx"     : 7000,
+		"Ny"     : 600,
+		"zL"     : 0.0,
+		"zR"     : 24.57,
+		"Nphonon": 5,
+		"Nelec"  : 3,
+		"Eigen"  : 1
+	},
+	"TimeParameters" : {
+		"Dt"     : 1.0,
+		"Runtime": 3000.0,
+		"Output" : 5
+	}
+}
+
+
+[PhysicalParameters]
+
+hbar 		=	1.0 ;
+M_electron	= 	1.0 ; Mass of the electron (au), 9.11e-31 kg
+M_C60		= 	2.59e4 ; 50.0 2.59e4 Mass of C60 (au) (default is 2.59e6), 2.36e-24 kg
+ElecVel		= 	0.488756 ; 0.635817 (OffRes), 0.590878 or 0.488756 (OnRes), 0.507206 (Excite Res 1&2)  velocity of incident electron, k-vector
+EAffin		=	-2.56 ; Electron affinity of the C60 molecule
+LBarrier	=	120 ; Size of left (refl) absorbing region
+RBarrier	=	120 ; Size of right (trans) absorbing region
+Xi		= 	40.0 ; Controls the width of the electron wavepacket
+WorkFxn		=	-5.40 ; Work function of Gold, averaged over different crystal facets (eV)
+Bias		= 	0.0 ; Bias voltage across the electrodes (V)
+ElecPos		=	-150.0 ; Initial position of the electronic wavepacket (-150)
+Epsilon		=	1.09 ; depth of potential well C60 sits in (eV)
+Requil		=	12.0 ; equilibrium distance of C60 from left electrode (au), 6.12 Ang (11.57 previously)
+CoupFxn		= 	1 ; Set to 0 for gaussian coupling, 1 for parabolic coupling
+Rad		=	10.0 ; radius of the C60 used in the coupling function (6.7085 prev)
+Sigma		=	1.0 ; coupling parameter for the gaussian coupling function
+Del		=	6.0 ; on/off rate for the capping functions with the parabolic coupling function
+CConst		= 	1.0 ; Coupling constant between the electron and nuclear degrees of freedom
+
+[Outputs]
+
+Potential	=	0 ; 0/1	Output the 2D potential energy surface ("Potential2D.txt")
+WvfxnInit	=	0 ; 0/1	Output the initial wavefunction ("Wavefunction_Initial.txt")
+FullWvfxn	= 	0 ; Output the full wavefunction at the given time step
+ElecStates	=	1 ; 0/1 Output the electronic wavefunctions from ITP ("ElecITP_Results.txt")
+PhonStates	=	1 ; 0/1	Output the phonon eigenstates from ITP ("MolITP_Results.txt")
+Animation	=	0 ; Set time increment to output full 2D wavefunction images at time steps
+Slice		= 	20 ; Set time increment to output 1D wavefunction images at time steps
+SliceIndex	=	350 ; Molecular Coordinate at which to output the wavefunciton slice
+ElecCorr	=	0 ; Electronic eigenstate overlapped with the 2D wavefunction in time
+MolecCorr	= 	0 ; Molecular eigenstate overlapped with the 2D wavefunction in time
+DCoeffR		=	0 ; Calculate the transmitted DCoefficients
+DCoeffL		=	0 ; Calculate the reflected DCoefficients
+Phases		=	0 ; Output Phase of the wavefunction at points specified in the code
+Energy		=	1 ; Output the energy of the molecule and electron in time
+Lifetime	=	1 ; Output the junction probability density in time
+ZExp		=	1 ; Calculate the position of the molecule in time
+FluxR		=	1 ; Calculate the transmitted wavefunction flux
+FluxL		= 	1 ; Calculate the reflected wavefunction flux
+FluxInt		=	0 ; Calculate the integral of the flux in time (FluxR and FluxL must be nonzero)
+Correlation = 	1 ; 2D Wavefunction correlation function
+
