@@ -24,7 +24,7 @@ SplitOp1D::SplitOp1D(programInputs &IP)
   for (int ii = nx/2; ii < nx; ii++)
     pgrid->element(ii) = -1.0*pgrid->element(nx-ii);
 
-  Vgrid   = make_shared<Array1D<double>>(nx,xmin,xstep);
+  Vgrid   = make_shared<Array1D<cplx>>(nx,xmin,xstep);
   Tgrid   = make_shared<Array1D<double>>(nx,xmin,xstep);
   KinetOp = make_shared<Array1D<cplx>>(nx,xmin,xstep);
   PotenOp = make_shared<Array1D<cplx>>(nx,xmin,xstep);
@@ -33,6 +33,15 @@ SplitOp1D::SplitOp1D(programInputs &IP)
   fftw_init_threads(); //initialize SMP
   fftw_plan_with_nthreads(nthreads); //use #(procs) processors
 
-  forplan  = fftw_plan_dft_1d(nx,(fftw_complex *)&wvfxn->element(0),(fftw_complex *)&wvfxn->element(0),FFTW_FORWARD,FFTW_MEASURE);
-  backplan = fftw_plan_dft_1d(nx,(fftw_complex *)&wvfxn->element(0),(fftw_complex *)&wvfxn->element(0),FFTW_FORWARD,FFTW_MEASURE);
+  forplan  = fftw_plan_dft_1d(nx,(fftw_complex *)wvfxn->data(),(fftw_complex *)wvfxn->data(),FFTW_FORWARD,FFTW_MEASURE);
+  backplan = fftw_plan_dft_1d(nx,(fftw_complex *)wvfxn->data(),(fftw_complex *)wvfxn->data(),FFTW_FORWARD,FFTW_MEASURE);
 }
+
+void SplitOp1D::initializeTDSE(std::function<cplx(double)> fV, std::function<double(double)> fT)
+{
+  transform(Vgrid->data(),Vgrid->data()+nx,xgrid->data(),fV);
+  transform(Tgrid->data(),Tgrid->data()+nx,pgrid->data(),fT);
+
+  transform(PotenOp->data(),PotenOp->data()+nx,Vgrid->data(),[&](cplx a){return exp(cplx(0.0,-1.0)*a*dt);});
+}
+

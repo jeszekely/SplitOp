@@ -24,7 +24,7 @@ public:
   std::shared_ptr<wvfxn1D> wvfxn;
 
   SplitOp1D(programInputs &IP);
-  // void initializeTDSE(Array1D <double> &, Array1D <double> &);
+  void initializeTDSE(std::function<cplx(double)>,std::function<double(double)>);
   // void propagateStep();
   // void propagateNSteps(int);
 
