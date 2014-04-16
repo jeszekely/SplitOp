@@ -3,7 +3,8 @@
 
 #include "wvfxn.hpp"
 #include "input_parser.hpp"
-#include <fftw3.h>
+#include "fftw3.h"
+#include "fftw3_mkl.h"
 #include <cmath>
 
 //typedef std::complex<double> cplx;
@@ -12,20 +13,17 @@ class SplitOp1D
 {
 protected:
   size_t nx;
-  double xmin, xmax, xstep, pstep;
-  double dt, simtime, runtime;
   int nthreads;
   fftw_plan forplan, backplan;
+  double xmin, xmax, xstep, pstep;
 
 public:
+  double dt, simtime, runtime;
   std::shared_ptr<Array1D<double>> xgrid, pgrid, Vgrid, Tgrid;
   std::shared_ptr<Array1D<cplx>> KinetOp, PotenOp;
   std::shared_ptr<wvfxn1D> wvfxn;
 
-SplitOp1D::SplitOp1D(programInputs &IP)
-{
-
-}
+  SplitOp1D(programInputs &IP);
   // void initializeTDSE(Array1D <double> &, Array1D <double> &);
   // void propagateStep();
   // void propagateNSteps(int);
@@ -39,6 +37,6 @@ SplitOp1D::SplitOp1D(programInputs &IP)
   // //Void output functions
   // void outputWvfxn();
   // void outputOperator(Array1D &);
-}
+};
 
 #endif

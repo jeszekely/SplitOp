@@ -7,15 +7,15 @@ CC = g++
 #MKLROOT = /opt/intel/composer_xe_2013_sp1/mkl
 CC = /opt/local/bin/g++-mp-4.8
 
-CFLAGS = -O3 -I$(MKLROOT)/include -Wall -Wno-sign-compare -Wno-unused-function -Werror -std=c++11 -openmp
+CFLAGS = -O3 -I$(MKLROOT)/include -I$(MKLROOT)/include/fftw -Wall -Wno-sign-compare -Wno-unused-function -Werror -std=c++11 -openmp
 
 BOOST_INC = -I/opt/local/include/boost/
 
-OBJ  =   obj/main.o obj/wvfxn.o obj/input_parser.o
+OBJ  =   obj/main.o obj/wvfxn.o obj/input_parser.o obj/splitop.o
 
 LIBS =  -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lmkl_sequential -lpthread -lm
 
-HEADS =  src/arrays.hpp src/wvfxn.hpp src/input_parser.hpp
+HEADS =  src/arrays.hpp src/wvfxn.hpp src/input_parser.hpp src/splitop.hpp
 BIN  =   SplitOp
 
 RM = rm -f
@@ -37,3 +37,6 @@ obj/wvfxn.o: src/wvfxn.cpp
 
 obj/input_parser.o: src/input_parser.cpp
 	$(CC) $(CFLAGS) -c  src/input_parser.cpp -o obj/input_parser.o $(BOOST_INC) -I./src
+
+obj/splitop.o: src/splitop.cpp
+	$(CC) $(CFLAGS) -c  src/splitop.cpp -o obj/splitop.o $(BOOST_INC) -I./src

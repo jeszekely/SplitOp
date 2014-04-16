@@ -6,6 +6,7 @@
 
 #include "wvfxn.hpp"
 #include "input_parser.hpp"
+#include "splitop.hpp"
 
 using namespace std;
 int main(int argc, char const *argv[])
@@ -42,6 +43,8 @@ int main(int argc, char const *argv[])
   AA.fill(1.0);
   cout << AA << AA.getSub(0,0,3,3);
   cout << AA.integrate_rect() << endl;
+
+  SplitOp1D TestCalc(IP);
 
   return(0);
 }

@@ -1,7 +1,5 @@
 #include "wvfxn.hpp"
 
-typedef std::complex<double> cplx;
-
 using namespace std;
 
 wvfxn1D::wvfxn1D(const int Nx, const double xi, const double xs) : Array1D<cplx>(Nx,cplx(xi),cplx(xs)){mass = hbar = 1.0;}
