@@ -127,7 +127,7 @@ public:
   {
   	assert(nx == o.nx);
   	Array1D<T> out(*this);
-  	std::transform(out.data(), out.data()+out.size(), o.data(), std::multiplies<T>());
+  	std::transform(out.data(), out.data()+out.size(), out.data(), o.data(), std::multiplies<T>());
   	return out;
   }
   template <typename U> Array1D& operator*=(const Array1D<U>& o)
@@ -140,7 +140,7 @@ public:
   {
   	assert(nx == o.nx);
   	Array1D<T> out(*this);
-  	std::transform(out.data(), out.data()+out.size(), o.data(), std::divides<T>());
+  	std::transform(out.data(), out.data()+out.size(), out.data(), o.data(), std::divides<T>());
   	return out;
   }
   template <typename U> Array1D& operator/=(const Array1D<U>& o)
@@ -153,7 +153,7 @@ public:
   {
   	assert(nx == o.nx);
   	Array1D<T> out(*this);
-  	std::transform(out.data(), out.data()+out.size(), o.data(), std::plus<T>());
+  	std::transform(out.data(), out.data()+out.size(), out.data(), o.data(), std::plus<T>());
   	return out;
   }
   template <typename U> Array1D& operator+=(const Array1D<U>& o)
@@ -166,7 +166,7 @@ public:
   {
   	assert(nx == o.nx);
   	Array1D<T> out(*this);
-  	std::transform(out.data(), out.data()+out.size(), o.data(), std::minus<T>());
+  	std::transform(out.data(), out.data()+out.size(), out.data(), o.data(), std::minus<T>());
   	return out;
   }
   template <typename U> Array1D& operator-=(const Array1D<U>& o)
@@ -414,7 +414,7 @@ public:
   {
     assert(nx == o.nx && ny == o.ny);
     Array2D<T> out(*this);
-    std::transform(out.data(), out.data()+out.size(), o.data(), std::multiplies<T>());
+    std::transform(out.data(), out.data()+out.size(), out.data(), o.data(), std::multiplies<T>());
     return out;
   }
 
@@ -428,7 +428,7 @@ public:
   {
     assert(nx == o.nx && ny == o.ny);
     Array2D<T> out(*this);
-    std::transform(out.data(), out.data()+out.size(), o.data(), std::divides<T>());
+    std::transform(out.data(), out.data()+out.size(), out.data(), o.data(), std::divides<T>());
     return out;
   }
   template <typename U> Array2D& operator/=(const Array2D<U>& o)
@@ -441,7 +441,7 @@ public:
   {
     assert(nx == o.nx && ny == o.ny);
     Array2D<T> out(*this);
-    std::transform(out.data(), out.data()+out.size(), o.data(), std::plus<T>());
+    std::transform(out.data(), out.data()+out.size(), out.data(), o.data(), std::plus<T>());
     return out;
   }
   template <typename U> Array2D& operator+=(const Array2D<U>& o)
@@ -454,7 +454,7 @@ public:
   {
     assert(nx == o.nx && ny == o.ny);
     Array2D<T> out(*this);
-    std::transform(out.data(), out.data()+out.size(), o.data(), std::minus<T>());
+    std::transform(out.data(), out.data()+out.size(), out.data(), o.data(), std::minus<T>());
     return out;
   }
 
