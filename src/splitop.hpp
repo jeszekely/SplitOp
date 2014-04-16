@@ -18,16 +18,14 @@ protected:
   fftw_plan forplan, backplan;
 
 public:
-  Array1D <double> xgrid, pgrid, Vgrid, Tgrid;
-  Array1D <cplx> KinetOp, PotenOp;
-  wvfxn1D wvfxn;
+  std::shared_ptr<Array1D<double>> xgrid, pgrid, Vgrid, Tgrid;
+  std::shared_ptr<Array1D<cplx>> KinetOp, PotenOp;
+  std::shared_ptr<wvfxn1D> wvfxn;
 
 SplitOp1D::SplitOp1D(programInputs &IP)
 {
-	
 
 }
-
   // void initializeTDSE(Array1D <double> &, Array1D <double> &);
   // void propagateStep();
   // void propagateNSteps(int);
