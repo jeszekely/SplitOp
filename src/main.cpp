@@ -4,11 +4,15 @@
 #include <vector>
 #include <ctime>
 
-#include "arrays.hpp"
+#include "wvfxn.hpp"
+#include "input_parser.hpp"
 
 using namespace std;
 int main(int argc, char const *argv[])
 {
+  programInputs IP("inputs.json");
+  cout << IP.nx << endl;
+
   Array1D <double> A(100,0,0);
   for (int ii = 0; ii<A.Nx(); ii++)
     A(ii) = -10.0;

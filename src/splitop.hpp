@@ -2,7 +2,9 @@
 #define SPLITOP_SPLITOP
 
 #include "wvfxn.hpp"
+#include "input_parser.hpp"
 #include <fftw3.h>
+#include <cmath>
 
 //typedef std::complex<double> cplx;
 
@@ -10,23 +12,35 @@ class SplitOp1D
 {
 protected:
   size_t nx;
-  double xinit, xstep, pstep;
-  double dt;
+  double xmin, xmax, xstep, pstep;
+  double dt, simtime, runtime;
   int nthreads;
   fftw_plan forplan, backplan;
+
 public:
-  Array1D <double> xgrid, pgrid;
+  Array1D <double> xgrid, pgrid, Vgrid, Tgrid;
   Array1D <cplx> KinetOp, PotenOp;
   wvfxn1D wvfxn;
-  void initializeTDSE(Array1D <double> &, Array1D <double> &);
-  void propagateStep();
-  void propagateNSteps(int);
 
-  //ITP Specific functions
-  //number of states, array to place them, convergence criterion
-  void propagateITP(int,Array2D<cplx> &, double);
-  void initializeITP(Array1D <double> &, Array1D <double> &);
-  void initializeGuess();
+SplitOp1D::SplitOp1D(programInputs &IP)
+{
+	
+
+}
+
+  // void initializeTDSE(Array1D <double> &, Array1D <double> &);
+  // void propagateStep();
+  // void propagateNSteps(int);
+
+  // //ITP Specific functions
+  // //number of states, array to place them, convergence criterion
+  // void initializeITP(Array1D <double> &, Array1D <double> &);
+  // void propagateITP(int,Array2D<cplx> &, double);
+  // void initializeGuess();
+
+  // //Void output functions
+  // void outputWvfxn();
+  // void outputOperator(Array1D &);
 }
 
 #endif

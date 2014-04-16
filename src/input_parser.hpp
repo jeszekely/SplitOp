@@ -1,7 +1,8 @@
-#ifndef DMRG_INPUT_PARSER
-#define DMRG_INPUT_PARSER
+#ifndef SPLITOP_INPUT_PARSER
+#define SPLITOP_INPUT_PARSER
 
 #include <string>
+#include <iostream>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
@@ -9,39 +10,80 @@ class programInputs
 {
 public:
 	std::string filename;
-	bool DP_Verbose;
-	bool TC_BasicMatrix_Run;
-	bool TC_Davidson_Run;
-	int TC_Davidson_MatrixSize;
-	int TC_Davidson_nVecs;
-	double TC_Davidson_tolerance;
-	bool TC_DMRGSpin_Run;
-	int TC_DMRGSpin_TestTrunc1;
-	int TC_DMRGSpin_TestTrunc2;
-	int TC_DMRGSpin_TestTrunc3;
-	int TC_DMRGSpin_ChainLen;
 
-	programInputs(const std::string fn) : filename(fn)
-	{
-		boost::property_tree::ptree mainIP;
-		boost::property_tree::json_parser::read_json(filename,mainIP);
+	//Computational cell parameters
+	int procs;
+	double xmin;
+	double xmax;
+	double ymin;
+	double ymax;
+	int nx;
+	int ny;
+	double zl;
+	double zr;
+	int nphonon;
+	int nelec;
+	int eigen;
 
-//		[DavidsonParams]
-		DP_Verbose = mainIP.get<bool>("DavidsonParams.Verbose",false);
+	//Time parameters
+	double dt;
+	double runtime;
+	double output;
 
-//		[TestCode]
-		TC_BasicMatrix_Run = mainIP.get<bool>("TestCode.BasicMatrix.Run",false);
+	//Physical parameters
+	double hbar;
+	double m_electron;
+	double m_C60;
+	double elecvel;
+	double eaffin;
+	double lbarrier;
+	double rbarrier;
+	double xi;
+	double workfxn;
+	double bias;
+	double elecpos;
+	double epsilon;
+	double requil;
+	int coupfxn;
+	double rad;
+	double sigma;
+	double del;
+	double cconst;
 
-		TC_Davidson_Run = mainIP.get<bool>("TestCode.Davidson.Run",false);
-		TC_Davidson_MatrixSize = mainIP.get<int>("TestCode.Davidson.MatrixSize",500);
-		TC_Davidson_nVecs = mainIP.get<int>("TestCode.Davidson.nVecs",2);
-		TC_Davidson_tolerance = mainIP.get<double>("TestCode.Davidson.tolerance",1.0e-6);
+	//Ouputs
+	int potential;
+	int wvfxninit;
+	int fullwvfxn;
+	int elecstates;
+	int phononstates;
+	int animation;
+	int slice;
+	int sliceindex;
+	int eleccorr;
+	int moleccorr;
+	int dcoeffr;
+	int dcoeffl;
+	int phases;
+	int energy;
+	int lifetime;
+	int zexp;
+	int fluxr;
+	int fluxl;
+	int fluxint;
+	int correlation;
 
-		TC_DMRGSpin_Run = mainIP.get<bool>("TestCode.DMRGSpin.Run",false);
-		TC_DMRGSpin_ChainLen = mainIP.get<int>("TestCode.DMRGSpin.ChainLen",10);
-		TC_DMRGSpin_TestTrunc1 = mainIP.get<int>("TestCode.DMRGSpin.TestTrunc1",10);
-		TC_DMRGSpin_TestTrunc2 = mainIP.get<int>("TestCode.DMRGSpin.TestTrunc2",10);
-		TC_DMRGSpin_TestTrunc3 = mainIP.get<int>("TestCode.DMRGSpin.TestTrunc3",10);
-	};
+	//Derived Parameters
+	double omega;
+	double lbarrieritn;
+	double rbarrieritn;
+
+	//Imports the parameters from json file, converts to atomic units
+	programInputs(std::string infile);
+
+	//Removes comment lines from the json file
+	void stripComments();
+
+	//Convert parameters to atomic units
+	void toAU();
 };
 #endif

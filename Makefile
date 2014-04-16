@@ -9,13 +9,13 @@ CC = /opt/local/bin/g++-mp-4.8
 
 CFLAGS = -O3 -I$(MKLROOT)/include -Wall -Wno-sign-compare -Wno-unused-function -Werror -std=c++11 -openmp
 
-BOOST_INC = -I/opt/local/include/
+BOOST_INC = -I/opt/local/include/boost/
 
-OBJ  =   obj/main.o obj/wvfxn.o
+OBJ  =   obj/main.o obj/wvfxn.o obj/input_parser.o
 
 LIBS =  -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lmkl_sequential -lpthread -lm
 
-HEADS =  src/arrays.hpp src/wvfxn.hpp
+HEADS =  src/arrays.hpp src/wvfxn.hpp src/input_parser.hpp
 BIN  =   SplitOp
 
 RM = rm -f
@@ -27,10 +27,13 @@ clean: clean-custom
 	${RM} $(OBJ) $(BIN)
 
 $(BIN): $(OBJ)
-	$(CC) $(CFLAGS) -o $(BIN) -I./src $(OBJ) $(BOOST_INC) $(LIBS)
+	$(CC) $(CFLAGS) -o $(BIN) -I./src $(OBJ) $(LIBS)
 
 obj/main.o: src/main.cpp
 	$(CC) $(CFLAGS) -c  src/main.cpp -o obj/main.o $(BOOST_INC) -I./src
 
 obj/wvfxn.o: src/wvfxn.cpp
-	$(CC) $(CFLAGS) -c  src/wvfxn.cpp -o obj/wvfxn.o $(BOOST_INC) -I./src
+	$(CC) $(CFLAGS) -c  src/wvfxn.cpp -o obj/wvfxn.o -I./src
+
+obj/input_parser.o: src/input_parser.cpp
+	$(CC) $(CFLAGS) -c  src/input_parser.cpp -o obj/input_parser.o $(BOOST_INC) -I./src
