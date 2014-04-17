@@ -23,8 +23,8 @@ public:
 
   SplitOp1D(programInputs &IP);
   void initializeTDSE(std::function<cplx(double)>,std::function<double(double)>);
-  // void propagateStep();
-  // void propagateNSteps(int);
+  void propagateStep();
+  void propagateNSteps(int);
 
   // //ITP Specific functions
   // //number of states, array to place them, convergence criterion
@@ -33,7 +33,7 @@ public:
   // void initializeGuess();
 
   // //Void output functions
-  // void outputWvfxn();
+  void outputWvfxn();
   // void outputOperator(Array1D &);
 };
 

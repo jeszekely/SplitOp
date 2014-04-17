@@ -7,6 +7,7 @@
 #include "wvfxn.hpp"
 #include "input_parser.hpp"
 #include "splitop.hpp"
+#include "junction.hpp"
 
 using namespace std;
 int main(int argc, char const *argv[])
@@ -45,6 +46,7 @@ int main(int argc, char const *argv[])
   cout << AA.integrate_rect() << endl;
 
   SplitOp1D TestCalc(IP);
-
+  transform(TestCalc.xgrid->data(),TestCalc.xgrid->data(),TestCalc.wvfxn->data(),[&](double x){return wvfxnElectron(x,IP);});
+  printArrays(2000,cout,*TestCalc.xgrid,*TestCalc.wvfxn);
   return(0);
 }

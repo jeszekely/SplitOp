@@ -32,6 +32,7 @@ public:
 
 	//Physical parameters
 	double hbar;
+	double echarge;
 	double m_electron;
 	double m_C60;
 	double elecvel;
@@ -49,6 +50,7 @@ public:
 	double sigma;
 	double del;
 	double cconst;
+	double alpha;
 
 	//Ouputs
 	int potential;

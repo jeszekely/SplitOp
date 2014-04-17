@@ -25,8 +25,8 @@ SplitOp1D::SplitOp1D(programInputs &IP)
     pgrid->element(ii) = -1.0*pgrid->element(nx-ii);
 
  	Vgrid   = make_shared<Array1D<cplx>>(nx,xmin,xstep);
-  Tgrid   = make_shared<Array1D<double>>(nx,xmin,xstep);
-  KinetOp = make_shared<Array1D<cplx>>(nx,xmin,xstep);
+  Tgrid   = make_shared<Array1D<double>>(nx,xmin,pstep);
+  KinetOp = make_shared<Array1D<cplx>>(nx,xmin,pstep);
   PotenOp = make_shared<Array1D<cplx>>(nx,xmin,xstep);
   wvfxn   = make_shared<wvfxn1D>(nx,xmin,xstep);
 
@@ -42,5 +42,50 @@ void SplitOp1D::initializeTDSE(std::function<cplx(double)> fV, std::function<dou
 	transform(xgrid->data(),xgrid->data()+nx,Vgrid->data(),fV);
 	transform(pgrid->data(),pgrid->data()+nx,Tgrid->data(),fT);
 	transform(Vgrid->data(),Vgrid->data()+nx,PotenOp->data(),[&](cplx a){return exp(cplx(0.0,-1.0)*a*dt);});
+	transform(Tgrid->data(),Tgrid->data()+nx,KinetOp->data(),[&](double a){return exp(cplx(0.0,-0.5)*a*dt);});
+}
+
+void SplitOp1D::propagateStep()
+{
+	//Apply kinetic operator
+	fftw_execute(forplan);
+	transform(wvfxn->data(),wvfxn->data()+nx,KinetOp->data(),wvfxn->data(),multiplies<cplx>());
+	fftw_execute(backplan);
+	wvfxn->scale(1.0/nx);
+
+	//Apply potential operator
+	transform(wvfxn->data(),wvfxn->data()+nx,PotenOp->data(),wvfxn->data(),multiplies<cplx>());
+
+	//Apply kinetic operator
+	fftw_execute(forplan);
+	transform(wvfxn->data(),wvfxn->data()+nx,KinetOp->data(),wvfxn->data(),multiplies<cplx>());
+	fftw_execute(backplan);
+	wvfxn->scale(1.0/nx);
+	simtime += dt;
+}
+
+void SplitOp1D::propagateNSteps(int nn)
+{
+	fftw_execute(forplan);
+	transform(wvfxn->data(),wvfxn->data()+nx,KinetOp->data(),wvfxn->data(),multiplies<cplx>());
+	fftw_execute(backplan);
+	wvfxn->scale(1.0/nx);
+
+	transform(wvfxn->data(),wvfxn->data()+nx,PotenOp->data(),wvfxn->data(),multiplies<cplx>());
+
+	for (int ii = 0; ii < nn-1; ii++)
+	{
+		fftw_execute(forplan);
+		transform(wvfxn->data(),wvfxn->data()+nx,KinetOp->data(),wvfxn->data(),[](cplx a, cplx b){return a*pow(b,2);});
+		fftw_execute(backplan);
+		wvfxn->scale(1.0/nx);
+		transform(wvfxn->data(),wvfxn->data()+nx,PotenOp->data(),wvfxn->data(),multiplies<cplx>());
+	}
+
+	fftw_execute(forplan);
+	transform(wvfxn->data(),wvfxn->data()+nx,KinetOp->data(),wvfxn->data(),multiplies<cplx>());
+	fftw_execute(backplan);
+	wvfxn->scale(1.0/nx);
+	simtime += nn*dt;
 }
 

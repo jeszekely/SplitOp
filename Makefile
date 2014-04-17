@@ -11,11 +11,11 @@ CFLAGS = -O3 -I$(MKLROOT)/include -I$(MKLROOT)/include/fftw -Wall -Wno-sign-comp
 
 BOOST_INC = -I/opt/local/include/boost/
 
-OBJ  =   obj/main.o obj/wvfxn.o obj/input_parser.o obj/splitop.o
+OBJ  =   obj/main.o obj/wvfxn.o obj/input_parser.o obj/splitop.o obj/junction.o
 
 LIBS =  -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lmkl_sequential -lpthread -lm
 
-HEADS =  src/arrays.hpp src/wvfxn.hpp src/input_parser.hpp src/splitop.hpp
+HEADS =  src/arrays.hpp src/wvfxn.hpp src/input_parser.hpp src/splitop.hpp src/junction.hpp
 BIN  =   SplitOp
 
 RM = rm -f
@@ -40,3 +40,6 @@ obj/input_parser.o: src/input_parser.cpp
 
 obj/splitop.o: src/splitop.cpp
 	$(CC) $(CFLAGS) -c  src/splitop.cpp -o obj/splitop.o $(BOOST_INC) -I./src
+
+obj/junction.o: src/junction.cpp
+	$(CC) $(CFLAGS) -c  src/junction.cpp -o obj/junction.o $(BOOST_INC) -I./src

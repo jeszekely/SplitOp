@@ -26,6 +26,7 @@ programInputs::programInputs(std::string fn) : filename(fn)
 	output  =IP.get<double>("TimeParameters.Output",5.0);
 
 	hbar       = IP.get<double>("PhysicalParameters.hbar",1.0);
+	echarge		 = IP.get<double>("PhysicalParameters.echarge",-1.0);
 	m_electron = IP.get<double>("PhysicalParameters.M_electron",1.0);
 	m_C60      = IP.get<double>("PhysicalParameters.M_C60",2.59e6);
 	elecvel    = IP.get<double>("PhysicalParameters.ElecVel",0.488756);
@@ -43,6 +44,7 @@ programInputs::programInputs(std::string fn) : filename(fn)
 	sigma      = IP.get<double>("PhysicalParameters.Sigma",1.0);
 	del        = IP.get<double>("PhysicalParameters.Del",6.0);
 	cconst     = IP.get<double>("PhysicalParameters.CConst",1.0);
+	alpha 		 = 4.0;
 
 	potential    = IP.get<int>("Outputs.Potential",0);
 	wvfxninit    = IP.get<int>("Outputs.WvfxnInit",0);
