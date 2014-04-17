@@ -7,8 +7,6 @@
 #include "fftw3_mkl.h"
 #include <cmath>
 
-//typedef std::complex<double> cplx;
-
 class SplitOp1D
 {
 protected:
@@ -19,8 +17,8 @@ protected:
 
 public:
   double dt, simtime, runtime;
-  std::shared_ptr<Array1D<double>> xgrid, pgrid, Vgrid, Tgrid;
-  std::shared_ptr<Array1D<cplx>> KinetOp, PotenOp;
+  std::shared_ptr<Array1D<double>> xgrid, pgrid, Tgrid;
+  std::shared_ptr<Array1D<cplx>> Vgrid, KinetOp, PotenOp;
   std::shared_ptr<wvfxn1D> wvfxn;
 
   SplitOp1D(programInputs &IP);

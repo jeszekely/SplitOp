@@ -24,7 +24,7 @@ SplitOp1D::SplitOp1D(programInputs &IP)
   for (int ii = nx/2; ii < nx; ii++)
     pgrid->element(ii) = -1.0*pgrid->element(nx-ii);
 
-  Vgrid   = make_shared<Array1D<cplx>>(nx,xmin,xstep);
+ 	Vgrid   = make_shared<Array1D<cplx>>(nx,xmin,xstep);
   Tgrid   = make_shared<Array1D<double>>(nx,xmin,xstep);
   KinetOp = make_shared<Array1D<cplx>>(nx,xmin,xstep);
   PotenOp = make_shared<Array1D<cplx>>(nx,xmin,xstep);
@@ -39,9 +39,8 @@ SplitOp1D::SplitOp1D(programInputs &IP)
 
 void SplitOp1D::initializeTDSE(std::function<cplx(double)> fV, std::function<double(double)> fT)
 {
-  transform(Vgrid->data(),Vgrid->data()+nx,xgrid->data(),fV);
-  transform(Tgrid->data(),Tgrid->data()+nx,pgrid->data(),fT);
-
-  transform(PotenOp->data(),PotenOp->data()+nx,Vgrid->data(),[&](cplx a){return exp(cplx(0.0,-1.0)*a*dt);});
+	transform(xgrid->data(),xgrid->data()+nx,Vgrid->data(),fV);
+	transform(pgrid->data(),pgrid->data()+nx,Tgrid->data(),fT);
+	transform(Vgrid->data(),Vgrid->data()+nx,PotenOp->data(),[&](cplx a){return exp(cplx(0.0,-1.0)*a*dt);});
 }
 
