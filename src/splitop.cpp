@@ -33,8 +33,8 @@ SplitOp1D::SplitOp1D(programInputs &IP)
   fftw_init_threads(); //initialize SMP
   fftw_plan_with_nthreads(nthreads); //use #(procs) processors
 
-  forplan  = fftw_plan_dft_1d(nx,(fftw_complex *)wvfxn->data(),(fftw_complex *)wvfxn->data(),FFTW_FORWARD,FFTW_MEASURE);
-  backplan = fftw_plan_dft_1d(nx,(fftw_complex *)wvfxn->data(),(fftw_complex *)wvfxn->data(),FFTW_FORWARD,FFTW_MEASURE);
+  forplan  = fftw_plan_dft_1d(nx,reinterpret_cast<fftw_complex*>(wvfxn->data()),reinterpret_cast<fftw_complex*>(wvfxn->data()),FFTW_FORWARD,FFTW_MEASURE);
+  backplan = fftw_plan_dft_1d(nx,reinterpret_cast<fftw_complex*>(wvfxn->data()),reinterpret_cast<fftw_complex*>(wvfxn->data()),FFTW_BACKWARD,FFTW_MEASURE);
 }
 
 void SplitOp1D::initializeTDSE(std::function<cplx(double)> fV, std::function<double(double)> fT)
@@ -51,7 +51,7 @@ void SplitOp1D::propagateStep()
 	fftw_execute(forplan);
 	transform(wvfxn->data(),wvfxn->data()+nx,KinetOp->data(),wvfxn->data(),multiplies<cplx>());
 	fftw_execute(backplan);
-	wvfxn->scale(1.0/nx);
+	wvfxn->scale(1.0/double(nx));
 
 	//Apply potential operator
 	transform(wvfxn->data(),wvfxn->data()+nx,PotenOp->data(),wvfxn->data(),multiplies<cplx>());
@@ -60,7 +60,8 @@ void SplitOp1D::propagateStep()
 	fftw_execute(forplan);
 	transform(wvfxn->data(),wvfxn->data()+nx,KinetOp->data(),wvfxn->data(),multiplies<cplx>());
 	fftw_execute(backplan);
-	wvfxn->scale(1.0/nx);
+	wvfxn->scale(1.0/double(nx));
+
 	simtime += dt;
 }
 

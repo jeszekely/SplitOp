@@ -250,15 +250,15 @@ std::ostream &operator<<(std::ostream &out, const Array1D <T> &o)
 	if (o.nx < 10)
 	{
 		for (int elem = 0; elem < o.nx; elem++)
-			out << std::setprecision(3) << o(elem) << "\t";
+			out << std::scientific << std::setprecision(3) << o(elem) << "\t";
 	}
 	else
 	{
 		for (int elem = 0; elem < 5; elem++)
-			out << std::setprecision(3) << o(elem) << "\t";
+			out <<  std::scientific << std::setprecision(3) << o(elem) << "\t";
 		out << "...\t";
 		for (int elem = o.nx-5; elem < o.nx; elem++)
-			out << std::setprecision(3) << o(elem) << "\t";
+			out <<  std::scientific << std::setprecision(3) << o(elem) << "\t";
 	}
 	out << std::endl;
   return out;

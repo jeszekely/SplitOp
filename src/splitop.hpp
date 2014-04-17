@@ -4,8 +4,8 @@
 #include "wvfxn.hpp"
 #include "input_parser.hpp"
 #include "fftw3.h"
-#include "fftw3_mkl.h"
 #include <cmath>
+#include <complex>
 
 class SplitOp1D
 {
@@ -33,7 +33,7 @@ public:
   // void initializeGuess();
 
   // //Void output functions
-  void outputWvfxn();
+  // void outputWvfxn();
   // void outputOperator(Array1D &);
 };
 
