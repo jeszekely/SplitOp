@@ -16,21 +16,23 @@ protected:
   double xmin, xmax, xstep, pstep;
 
 public:
-  double dt, simtime, runtime;
+  double itpdt, dt, simtime, runtime;
   std::shared_ptr<Array1D<double>> xgrid, pgrid, Tgrid;
   std::shared_ptr<Array1D<cplx>> Vgrid, KinetOp, PotenOp;
   std::shared_ptr<wvfxn1D> wvfxn;
 
   SplitOp1D(programInputs &IP);
+  ~SplitOp1D();
   void initializeTDSE(std::function<cplx(double)>,std::function<double(double)>);
   void propagateStep();
   void propagateNSteps(int);
 
   // //ITP Specific functions
   // //number of states, array to place them, convergence criterion
-  // void initializeITP(Array1D <double> &, Array1D <double> &);
-  // void propagateITP(int,Array2D<cplx> &, double);
-  // void initializeGuess();
+  void initializeITP(std::function<cplx(double)>,std::function<double(double)>);
+  void propagateITP(Array2D<cplx> &, double);
+  void updateITP();
+  void initializeGuess(std::vector<std::shared_ptr<wvfxn1D>>);
 
   // //Void output functions
   // void outputWvfxn();

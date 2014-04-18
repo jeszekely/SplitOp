@@ -123,6 +123,13 @@ public:
   }
 
 //Array-Array operations
+  template <typename U> Array1D operator=(const Array1D<U>& o)
+  {
+    assert(nx == o.nx);
+    std::copy_n(o.data(), o.size(), data());
+    return *this;
+  }
+
   template <typename U> Array1D operator*(const Array1D<U>& o) const
   {
   	assert(nx == o.nx);
