@@ -4,6 +4,9 @@ using namespace std;
 
 wvfxn1D::wvfxn1D(const int Nx, const double xi, const double xs) : Array1D<cplx>(Nx,cplx(xi),cplx(xs)){mass = hbar = 1.0;}
 wvfxn1D::wvfxn1D(const int Nx, const cplx xi, const cplx xs) : Array1D<cplx>(Nx,xi,xs){mass = hbar = 1.0;}
+wvfxn1D::wvfxn1D(const int Nx, const double xi, const double xs, const double hb, const double m) : Array1D<cplx>(Nx,cplx(xi),cplx(xs)), hbar(hb), mass(m){}
+wvfxn1D::wvfxn1D(const int Nx, const cplx xi, const cplx xs, const double hb, const double m) : Array1D<cplx>(Nx,xi,xs), hbar(hb), mass(m){}
+
 wvfxn1D::wvfxn1D(const wvfxn1D& o) : Array1D<cplx>(o){}
 wvfxn1D::wvfxn1D(wvfxn1D&& o) : Array1D<cplx>(move(o)){}
 
@@ -28,6 +31,8 @@ double wvfxn1D::flux(const int xx)
 
 wvfxn2D::wvfxn2D(const int Nx, const int Ny, const double xs, const double ys) : Array2D<cplx>(Nx,Ny,cplx(xs),cplx(ys)){mass = hbar = 1.0;}
 wvfxn2D::wvfxn2D(const int Nx, const int Ny, const cplx xs, const cplx ys) : Array2D<cplx>(Nx,Ny,xs,ys){mass = hbar = 1.0;}
+wvfxn2D::wvfxn2D(const int Nx, const int Ny, const double xs, const double ys, const double hb, const double m) : Array2D<cplx>(Nx,Ny,cplx(xs),cplx(ys)), hbar(hb), mass(m){}
+wvfxn2D::wvfxn2D(const int Nx, const int Ny, const cplx xs, const cplx ys, const double hb, const double m) : Array2D<cplx>(Nx,Ny,xs,ys), hbar(hb), mass(m){}
 wvfxn2D::wvfxn2D(const wvfxn2D& o) : Array2D<cplx>(o){}
 wvfxn2D::wvfxn2D(wvfxn2D&& o) : Array2D<cplx>(move(o)){}
 

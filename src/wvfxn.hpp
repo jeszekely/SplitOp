@@ -9,12 +9,15 @@ typedef std::complex<double> cplx;
 
 class wvfxn1D : public Array1D<cplx>
 {
-private:
-  double mass;
+protected:
   double hbar;
+  double mass;
 public:
   wvfxn1D(const int, const double, const double);
   wvfxn1D(const int, const cplx, const cplx);
+  wvfxn1D(const int, const double, const double, const double, const double);
+  wvfxn1D(const int, const cplx, const cplx, const double, const double);
+
   wvfxn1D(const wvfxn1D&);
   wvfxn1D(wvfxn1D&&);
 
@@ -34,12 +37,15 @@ public:
 
 class wvfxn2D : public Array2D<cplx>
 {
-private:
-  double mass;
+protected:
   double hbar;
+  double mass;
 public:
   wvfxn2D(const int, const int, const double, const double);
   wvfxn2D(const int, const int, const cplx, const cplx);
+  wvfxn2D(const int, const int, const double, const double, const double, const double);
+  wvfxn2D(const int, const int, const cplx, const cplx, const double, const double);
+
   wvfxn2D(const wvfxn2D&);
   wvfxn2D(wvfxn2D&&);
 

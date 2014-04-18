@@ -123,7 +123,7 @@ public:
   }
 
 //Array-Array operations
-  template <typename U> Array1D operator=(const Array1D<U>& o)
+  Array1D operator=(const Array1D<T>& o)
   {
     assert(nx == o.nx);
     std::copy_n(o.data(), o.size(), data());
