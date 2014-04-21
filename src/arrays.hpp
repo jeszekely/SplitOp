@@ -548,7 +548,7 @@ public:
     else if (yy > ny-4)
       deriv = (1.0/(12.0*ystep*ystep))*(45.0*element(xx,yy) - 154.0*element(xx,yy-1) + 214.0*element(xx,yy-2) - 156.0*element(xx,yy-3) + 61.0*element(xx,yy-4) - 10.0*element(xx,yy-5));
     else
-      deriv = (1.0/(180*ystep*ystep))*(2.0*element(xx,yy-3) - 27.0*element(xx,yy-2) + 270.0*element(xx,yy-1) - 490.0*element(xx,yy) + 270.0*element(xx,yy+1) - 27.0*element(xx,yy+2) + 2.0*element(xx,yy+3));
+      deriv = (1.0/(180.0*ystep*ystep))*(2.0*element(xx,yy-3) - 27.0*element(xx,yy-2) + 270.0*element(xx,yy-1) - 490.0*element(xx,yy) + 270.0*element(xx,yy+1) - 27.0*element(xx,yy+2) + 2.0*element(xx,yy+3));
     return deriv;
   }
   // T deriv_28(const int xx)

@@ -9,10 +9,10 @@ typedef std::complex<double> cplx;
 
 class wvfxn1D : public Array1D<cplx>
 {
-protected:
+public:
   double hbar;
   double mass;
-public:
+
   wvfxn1D(const int, const double, const double);
   wvfxn1D(const int, const cplx, const cplx);
   wvfxn1D(const int, const double, const double, const double, const double);
@@ -40,23 +40,28 @@ public:
 
 class wvfxn2D : public Array2D<cplx>
 {
-protected:
-  double hbar;
-  double mass;
 public:
+  double hbar;
+  double mass1;
+  double mass2;
+
   wvfxn2D(const int, const int, const double, const double);
   wvfxn2D(const int, const int, const cplx, const cplx);
-  wvfxn2D(const int, const int, const double, const double, const double, const double);
-  wvfxn2D(const int, const int, const cplx, const cplx, const double, const double);
+  wvfxn2D(const int, const int, const double, const double, const double, const double, const double);
+  wvfxn2D(const int, const int, const cplx, const cplx, const double, const double, const double);
 
   wvfxn2D(const wvfxn2D&);
   wvfxn2D(wvfxn2D&&);
+  wvfxn2D& operator=(const wvfxn2D&);
 
 //Wavefunction specific operations
   double getNorm();
   void normalize();
   double flux_x(const int xx);
   double flux_y(const int yy);
+  double hb();
+  double m1();
+  double m2();
   template <typename T> wvfxn2D operator|(T &o)
   {
     assert (o.Nx() == nx && o.Ny() == ny);
@@ -65,7 +70,6 @@ public:
       out.vals[ii] = std::conj(vals[ii])*o.vals[ii];
     return out;
   };
-
 };
 
 #endif

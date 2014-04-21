@@ -36,12 +36,22 @@ double wvfxn1D::flux(const int xx)
   return real(psi_deriv*psi_star*hbar/mass);
 }
 
-wvfxn2D::wvfxn2D(const int Nx, const int Ny, const double xs, const double ys) : Array2D<cplx>(Nx,Ny,cplx(xs),cplx(ys)){mass = hbar = 1.0;}
-wvfxn2D::wvfxn2D(const int Nx, const int Ny, const cplx xs, const cplx ys) : Array2D<cplx>(Nx,Ny,xs,ys){mass = hbar = 1.0;}
-wvfxn2D::wvfxn2D(const int Nx, const int Ny, const double xs, const double ys, const double hb, const double m) : Array2D<cplx>(Nx,Ny,cplx(xs),cplx(ys)), hbar(hb), mass(m){}
-wvfxn2D::wvfxn2D(const int Nx, const int Ny, const cplx xs, const cplx ys, const double hb, const double m) : Array2D<cplx>(Nx,Ny,xs,ys), hbar(hb), mass(m){}
+double wvfxn1D::m() {return mass;}
+double wvfxn1D::hb() {return hbar;}
+
+wvfxn2D::wvfxn2D(const int Nx, const int Ny, const double xs, const double ys) : Array2D<cplx>(Nx,Ny,cplx(xs),cplx(ys)) {mass1 = mass2 = hbar = 1.0;}
+wvfxn2D::wvfxn2D(const int Nx, const int Ny, const cplx xs, const cplx ys) : Array2D<cplx>(Nx,Ny,xs,ys){mass1 = mass2 = hbar = 1.0;}
+wvfxn2D::wvfxn2D(const int Nx, const int Ny, const double xs, const double ys, const double hb, const double m1, const double m2) : Array2D<cplx>(Nx,Ny,cplx(xs),cplx(ys)), hbar(hb), mass1(m1), mass2(m2){}
+wvfxn2D::wvfxn2D(const int Nx, const int Ny, const cplx xs, const cplx ys, const double hb, const double m1, const double m2) : Array2D<cplx>(Nx,Ny,xs,ys), hbar(hb), mass1(m1), mass2(m2) {}
 wvfxn2D::wvfxn2D(const wvfxn2D& o) : Array2D<cplx>(o){}
 wvfxn2D::wvfxn2D(wvfxn2D&& o) : Array2D<cplx>(move(o)){}
+
+wvfxn2D& wvfxn2D::operator=(const wvfxn2D& o)
+{
+  assert(nx == o.nx && ny == o.ny);
+  copy_n(o.data(), o.size(), data());
+  return *this;
+}
 
 double wvfxn2D::getNorm()
 {
@@ -66,7 +76,7 @@ double wvfxn2D::flux_x(const int xx)
     psi_deriv = cplx(0.0,-1.0)*deriv_16_x(xx,ii);
     probcurr(ii) = real(psi_deriv*psi_star);
   }
-  return (mass/hbar)*probcurr.integrate_rect();
+  return (mass1/hbar)*probcurr.integrate_rect();
 }
 double wvfxn2D::flux_y(const int yy)
 {
@@ -78,9 +88,8 @@ double wvfxn2D::flux_y(const int yy)
     psi_deriv = cplx(0.0,-1.0)*deriv_16_y(ii,yy);
     probcurr(ii) = real(psi_deriv*psi_star);
   }
-  return (mass/hbar)*probcurr.integrate_rect();
+  return (mass2/hbar)*probcurr.integrate_rect();
 }
-
-double wvfxn1D::m() {return mass;}
-double wvfxn1D::hb() {return hbar;}
-
+double wvfxn2D::m1() {return mass1;}
+double wvfxn2D::m2() {return mass2;}
+double wvfxn2D::hb() {return hbar;}

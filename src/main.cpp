@@ -13,6 +13,7 @@ using namespace std;
 int main(int argc, char const *argv[])
 {
   programInputs IP("inputs.json");
+
 #if 0
   SplitOp1D TestCalc(IP);
   transform(TestCalc.xgrid->data(),TestCalc.xgrid->data()+IP.nx,TestCalc.wvfxn->data(),[&](double x){return cplx(wvfxnElectron(x,IP));});
@@ -22,7 +23,10 @@ int main(int argc, char const *argv[])
   TestCalc.propagateStep(100);
   printArrays(7000,cout,*TestCalc.xgrid,*TestCalc.wvfxn);
 #endif
-  //ITP test
+
+
+#if 0
+//ITP test
   IP.xmin = -10.0;
   IP.xmax = 10.0;
   IP.xi = 2;
@@ -47,6 +51,56 @@ int main(int argc, char const *argv[])
   E2.normalize();
 
   printArrays(7000,cout,*ITPCalc.xgrid,GS,E1,E2);
+#endif
+
+//Set up basics for the 2D calculation
+SplitOp2D MainCalc(IP);
+MainCalc.wvfxn->mass1 = IP.m_electron;
+MainCalc.wvfxn->mass2 = IP.m_C60;
+MainCalc.initializeTDSE([&](double a, double b){return HPotential(a,b,IP);}, [&](double a, double b){return HKinetic2D(a,b,IP.m_electron,IP.m_C60);});
+
+//Setting up electronic subspace calculation
+int JL = -1;
+int JR = -1;
+for (int ii = 0; ii < IP.nx; ii++)
+{
+  if (JL < 0 && MainCalc.xgrid->element(ii) >= IP.requil - 45.0)
+    JL = ii;
+  if (JR < 0 && MainCalc.xgrid->element(ii) >= IP.requil + 45.0)
+    JR = ii;
+  if (JR > 0 && JL > 0)
+    break;
+}
+int nxJunction = JR - JL;
+if (nxJunction % 2 == 1)
+{
+  nxJunction++;
+  JL++;
+}
+programInputs JuncIP = IP;
+JuncIP.nx = nxJunction;
+JuncIP.xmin = MainCalc.xgrid->element(JL);
+JuncIP.xmax = MainCalc.xgrid->element(JR);
+cout << "The junction spans from index " << JL << " to " << JR << " in the electronic subspace." << endl;
+SplitOp1D ElecCalc(JuncIP);
+ElecCalc.initializeITP([&](double a){return ElecParab(a,IP.requil,IP);}, [&](double a){return HKinetic1D(a,IP.m_electron);});
+Array2D <cplx> ElecStates(nxJunction,IP.nelec,JuncIP.xmin,ElecCalc.xstep);
+ElecCalc.propagateITP(ElecStates);
+if (IP.elecstates == 1)
+{
+  ofstream ElecITP;
+  ElecITP.open("output_data/ElecITP_Results.txt");
+  ElecITP << "Junction Coordinate (au) \t Potential \t States" << endl;
+  for (int kk = 0; kk < ElecStates.Nx(); kk++)
+  {
+    ElecITP << ElecCalc.xgrid->element(kk) << "\t" << real(ElecCalc.Vgrid->element(kk));
+    for (int jj = 0; jj < ElecStates.Ny(); jj++)
+      ElecITP << "\t" << real(ElecStates(kk,jj));
+    ElecITP << endl;
+  }
+  ElecITP.close();
+}
+
 
   return(0);
 }
