@@ -24,17 +24,15 @@ public:
   SplitOp1D(programInputs &IP);
   ~SplitOp1D();
   void initializeTDSE(std::function<cplx(double)>,std::function<double(double)>);
-  void propagateStep();
-  void propagateNSteps(int);
+  void propagateStep(int ii = 1);
 
   // //ITP Specific functions
   // //number of states, array to place them, convergence criterion
   void initializeITP(std::function<cplx(double)>,std::function<double(double)>);
-  void propagateITP(Array2D<cplx> &, double);
+  void propagateITP(Array2D<cplx> &, double tolerance = 1.0e-8);
   void updateITP();
   void initializeGuess(std::vector<std::shared_ptr<wvfxn1D>>);
-
-  // //Void output functions
+  double getEnergy();  // //Void output functions
   // void outputWvfxn();
   // void outputOperator(Array1D &);
 };
@@ -59,7 +57,6 @@ public:
 //   ~SplitOp1D();
 //   void initializeTDSE(std::function<cplx(double)>,std::function<double(double)>);
 //   void propagateStep();
-//   void propagateNSteps(int);
 
 //   // //Void output functions
 //   // void outputWvfxn();

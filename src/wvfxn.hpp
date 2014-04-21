@@ -20,11 +20,14 @@ public:
 
   wvfxn1D(const wvfxn1D&);
   wvfxn1D(wvfxn1D&&);
+  wvfxn1D& operator=(const wvfxn1D&);
 
 //Wavefunction specific operations
   double getNorm();
   void normalize();
   double flux(const int xx);
+  double hb();
+  double m();
   template <typename T> wvfxn1D operator|(T &o)
   {
     assert (o.Nx() == nx);

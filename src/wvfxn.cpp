@@ -10,6 +10,13 @@ wvfxn1D::wvfxn1D(const int Nx, const cplx xi, const cplx xs, const double hb, co
 wvfxn1D::wvfxn1D(const wvfxn1D& o) : Array1D<cplx>(o){}
 wvfxn1D::wvfxn1D(wvfxn1D&& o) : Array1D<cplx>(move(o)){}
 
+wvfxn1D& wvfxn1D::operator=(const wvfxn1D& o)
+{
+  assert(nx == o.nx);
+  copy_n(o.data(), o.size(), data());
+  return *this;
+}
+
 double wvfxn1D::getNorm()
 {
   auto S = *this | *this;
@@ -73,4 +80,7 @@ double wvfxn2D::flux_y(const int yy)
   }
   return (mass/hbar)*probcurr.integrate_rect();
 }
+
+double wvfxn1D::m() {return mass;}
+double wvfxn1D::hb() {return hbar;}
 

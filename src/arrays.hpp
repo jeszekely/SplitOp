@@ -122,8 +122,8 @@ public:
     return;
   }
 
-//Array-Array operations
-  Array1D operator=(const Array1D<T>& o)
+// //Array-Array operations
+  Array1D<T>& operator=(const Array1D<T>& o)
   {
     assert(nx == o.nx);
     std::copy_n(o.data(), o.size(), data());
@@ -414,6 +414,13 @@ public:
     for (int ii = 0; ii < o.ny; ii++)
       std::copy_n(&o(0,ii), o.nx, &element(xindex,yindex+ii));
     return;
+  }
+
+  Array2D operator=(const Array2D<T>& o)
+  {
+    assert(nx == o.nx && ny = o.ny);
+    std::copy_n(o.data(), o.size(), data());
+    return *this;
   }
 
 //element by element operations
