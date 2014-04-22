@@ -2,6 +2,7 @@
 #define SPLITOP_ARRAYS
 #include <memory>
 #include <algorithm>
+#include <numeric>
 #include <iostream>
 #include <iomanip>
 #include <assert.h>

@@ -95,7 +95,7 @@ Molecular/Phonon Subspace Calculations
   }
 
 /***********************************************
-Determine the imaginary potential beginning/end
+Determine the imaginary potentials begin/end
 ************************************************/
 
   int MolPotenL = 0;
@@ -120,7 +120,62 @@ Determine the imaginary potential beginning/end
   }
   cout << "Right molecular absorbing potential begins at array index " << MolPotenR << "." << endl;
 
+  int ElecPotenL = 0;
+  int ElecPotenR = 0;
+  found          = 0;
+  while (found == 0)
+  {
+    if (abs(imag(MainCalc.Vgrid->element(ElecPotenL,IP.ny/2))) == 0)
+      found = 1;
+    else
+      ElecPotenL++;
+  }
+  cout << "Left electronic absorbing potential ends at array index " << ElecPotenL << "." << endl;
 
+  ElecPotenR = ElecPotenL;
+  while (found == 1)
+  {
+    if (abs(imag(MainCalc.Vgrid->element(ElecPotenR,IP.ny/2))) != 0)
+      found = 0;
+    else
+      ElecPotenR++;
+  }
+  cout << "Right electronic absorbing potential begins at array index " << ElecPotenR << "." << endl;
+
+
+/***********************************************
+Determine the junction bounds
+************************************************/
+
+  int zRjunc = 0;
+  int zLjunc = 0;
+  for (int ii = 0; ii < IP.nx; ii++)
+  {
+    if (MainCalc.xgrid->element(ii) >= IP.zl)
+    {
+      zLjunc = ii;
+      break;
+    }
+  }
+  for (int ii = 0; ii < IP.nx; ii++)
+  {
+    if (MainCalc.xgrid->element(ii) >= IP.zr)
+    {
+      zRjunc = ii;
+      break;
+    }
+  }
+  cout << "The junction spans from index " << zLjunc << " to index " << zRjunc << "." << endl;
+
+/***********************************************
+Define initial 2D wavefunction
+************************************************/
+
+  for (int ii = 0; ii < IP.nx; ii++)
+    for (int jj = 0; jj < IP.ny; jj++)
+      MainCalc.wvfxn->element(ii,jj) = wvfxnElectron(MainCalc.xgrid->element(ii),IP)*MoleStates(0,jj);
+  MainCalc.wvfxn->normalize();
+  MainCalc.propagateStep(10);
 
   return(0);
 }

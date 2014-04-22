@@ -23,13 +23,13 @@ double V0 (double zz, double ZZ, programInputs &IP);
 double absorbingPotential(double XX, programInputs &IP);
 double absorbingPotentialMol(double XX, programInputs &IP);
 double HPotentialNoAbs (double zz, double ZZ, programInputs &IP);
-cplx HPotential (double zz, double ZZ, programInputs &IP);
+cplx   HPotential (double zz, double ZZ, programInputs &IP);
 double wvfxnNuclear (double ZZ, programInputs &IP);
-cplx wvfxnElectron (double zz, programInputs &IP);
+cplx   wvfxnElectron (double zz, programInputs &IP);
 double hermite(int n, double x);
 double factorial(int n);
 double hoWvfxn(int n, double x, double xcen, double omega, double m, double hbar);
-int kron_delta(int x, int y);
+int    kron_delta(int x, int y);
 
 
 #endif
