@@ -5,27 +5,36 @@ using namespace std;
 
 double ChebyshevCoeff(int nn, double alpha)
 {
+  cout << "!!!" << boost::math::cyl_bessel_j(nn,alpha);
   return 2.0*boost::math::cyl_bessel_j(nn,alpha);
 }
 
-shared_ptr<polynomial<cplx>> ClenshawChebyshevProp(int nn, double alpha)
+shared_ptr<polynomial<cplx>> ClenshawChebyshevProp(int nn, double a)
 {
-  std::shared_ptr<polynomial<T>> p0,p1,pn;
-  polynomial<T> a1(2);
-  a1(1)          = 2;
-  p0             = std::make_shared<polynomial<T>>(1);
-  p0->element(0) = T(1.0);
-  p1             = std::make_shared<polynomial<T>>(2);
-  p1->element(1) = T(1.0);
-  if (nn == 0) return p0;
-  if (nn == 1) return p1;
-  int kk = 1;
-  while (kk < nn)
+  assert(nn > 2);
+  polynomial<cplx> phi1(1);
+  phi1(0)  = 1;
+  polynomial<cplx> phi2(2);
+  phi2(1)  = 1;
+  polynomial<cplx> bnp1(1);
+  polynomial<cplx> bnp2(1);
+  polynomial<cplx> alpha(2);
+  alpha(1) = 2;
+  polynomial<cplx> beta(1);
+  beta(0)  = -1;
+  int kk   = nn;
+  polynomial<cplx> bn(1);
+
+  while (kk > 1)
   {
-    kk++;
-    pn = std::make_shared<polynomial<T>>(*p1*a1-(*p0));
-    p0 = p1;
-    p1 = pn;
+    bnp2  = bnp1;
+    bnp1  = bn;
+    cout << bn;
+    polynomial<cplx> ak(1);
+    ak(0) = pow(cplx(0.0,1.0),nn)* ChebyshevCoeff(nn,a);
+    bn    = alpha*bnp1 + beta*bnp2 + ak;
+    kk--;
   }
-  return pn;
+  shared_ptr<polynomial<cplx>> S = make_shared<polynomial<cplx>>(phi2*bnp1+beta*phi1*bnp2);
+  return S;
 }

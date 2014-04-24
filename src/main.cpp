@@ -1,8 +1,8 @@
-#include <iostream>
-#include <cmath>
-#include <algorithm>
-#include <vector>
-#include <ctime>
+// #include <iostream>
+// #include <cmath>
+// #include <algorithm>
+// #include <vector>
+// #include <ctime>
 
 #include "wvfxn.hpp"
 #include "input_parser.hpp"
@@ -11,6 +11,7 @@
 #include "polynomial.hpp"
 
 using namespace std;
+
 int main(int argc, char const *argv[])
 {
   cout << "Hermite Test Case:" << endl;
@@ -20,6 +21,7 @@ int main(int argc, char const *argv[])
   for (int ii = 0; ii < 10; ii++)
    cout << *Chebyshev<int>(ii);
 
+cout << *ClenshawChebyshevProp(10,1.0);
 
 #if 0
   programInputs IP("inputs.json");
