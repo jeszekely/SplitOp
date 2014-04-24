@@ -129,6 +129,7 @@ std::ostream &operator<<(std::ostream &out, const polynomial<T> &o)
   return out;
 };
 
+//"probabilist's" Hermite polynomials
 template <typename T>
 std::shared_ptr<polynomial<T>> Hermite(int nn)
 {
@@ -146,6 +147,30 @@ std::shared_ptr<polynomial<T>> Hermite(int nn)
   {
     kk++;
     p0->scale(kk-1);
+    pn = make_shared<polynomial<T>>(*p1*a1-(*p0));
+    p0 = p1;
+    p1 = pn;
+  }
+  return pn;
+};
+
+//Chebyshev polynomials of the first kind
+template <typename T>
+std::shared_ptr<polynomial<T>> Chebyshev(int nn)
+{
+  std::shared_ptr<polynomial<T>> p0,p1,pn;
+  polynomial<T> a1(2);
+  a1(1) = 2;
+  p0 = make_shared<polynomial<T>>(1);
+  p0->element(0) = T(1.0);
+  p1 = make_shared<polynomial<T>>(2);
+  p1->element(1) = T(1.0);
+  if (nn == 0) return p0;
+  if (nn == 1) return p1;
+  int kk = 1;
+  while (kk < nn)
+  {
+    kk++;
     pn = make_shared<polynomial<T>>(*p1*a1-(*p0));
     p0 = p1;
     p1 = pn;
