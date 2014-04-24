@@ -1,12 +1,17 @@
 #ifndef DMRG_MATRIX
 #define DMRG_MATRIX
 
-#include <memory>
 #include <algorithm>
-#include <iostream>
-#include <iomanip>
 #include <assert.h>
+#include <iomanip>
+#include <iostream>
+#include <memory>
 #include <random>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+typedef std::complex<double> cplx;
 
 template <typename T> class matrixBase
 {

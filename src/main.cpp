@@ -8,10 +8,18 @@
 #include "input_parser.hpp"
 #include "splitop.hpp"
 #include "junction.hpp"
+#include "polynomial.hpp"
 
 using namespace std;
 int main(int argc, char const *argv[])
 {
+  polynomial<double> p(2);
+  polynomial<double> q(3);
+  p(1) = 2.0;
+  q(1) = -1.0;
+  q(2) = 10;
+  polynomial<double> f = q+p;
+#if 0
   programInputs IP("inputs.json");
 
 //Set up basics for the 2D calculation
@@ -176,6 +184,6 @@ Define initial 2D wavefunction
       MainCalc.wvfxn->element(ii,jj) = wvfxnElectron(MainCalc.xgrid->element(ii),IP)*MoleStates(0,jj);
   MainCalc.wvfxn->normalize();
   MainCalc.propagateStep(10);
-
+#endif
   return(0);
 }
