@@ -1,13 +1,16 @@
 #ifndef SPLITOP_ARRAYS
 #define SPLITOP_ARRAYS
-#include <memory>
+
 #include <algorithm>
-#include <numeric>
-#include <iostream>
-#include <iomanip>
 #include <assert.h>
-#include <random>
+#include <cmath>
 #include <complex>
+#include <iomanip>
+#include <memory>
+#include <numeric>
+#include <random>
+#include <stdexcept>
+#include <vector>
 
 template <typename T> class Array1D
 {

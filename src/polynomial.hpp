@@ -1,13 +1,16 @@
 #ifndef SPLITOP_POLYNOMIAL
 #define SPLITOP_POLYNOMIAL
 
-#include <assert.h>
-#include <stdexcept>
-#include <vector>
 #include <algorithm>
+#include <assert.h>
 #include <cmath>
 #include <complex>
 #include <iostream>
+#include <memory>
+#include <stdexcept>
+#include <vector>
+
+typedef std::complex<double> cplx;
 
 template <typename T>
 class polynomial
@@ -125,7 +128,7 @@ std::ostream &operator<<(std::ostream &out, const polynomial<T> &o)
 {
   for (int ii = 0; ii < o.size(); ii++)
     out << o(ii) << "\t";
-  out << endl;
+  out << std::endl;
   return out;
 };
 
@@ -136,9 +139,9 @@ std::shared_ptr<polynomial<T>> Hermite(int nn)
   std::shared_ptr<polynomial<T>> p0,p1,pn;
   polynomial<T> a1(2);
   a1(1)          = 1;
-  p0             = make_shared<polynomial<T>>(1);
+  p0             = std::make_shared<polynomial<T>>(1);
   p0->element(0) = T(1.0);
-  p1             = make_shared<polynomial<T>>(2);
+  p1             = std::make_shared<polynomial<T>>(2);
   p1->element(1) = T(1.0);
   if (nn == 0) return p0;
   if (nn == 1) return p1;
@@ -147,7 +150,7 @@ std::shared_ptr<polynomial<T>> Hermite(int nn)
   {
     kk++;
     p0->scale(kk-1);
-    pn = make_shared<polynomial<T>>(*p1*a1-(*p0));
+    pn = std::make_shared<polynomial<T>>(*p1*a1-(*p0));
     p0 = p1;
     p1 = pn;
   }
@@ -161,9 +164,9 @@ std::shared_ptr<polynomial<T>> Chebyshev(int nn)
   std::shared_ptr<polynomial<T>> p0,p1,pn;
   polynomial<T> a1(2);
   a1(1)          = 2;
-  p0             = make_shared<polynomial<T>>(1);
+  p0             = std::make_shared<polynomial<T>>(1);
   p0->element(0) = T(1.0);
-  p1             = make_shared<polynomial<T>>(2);
+  p1             = std::make_shared<polynomial<T>>(2);
   p1->element(1) = T(1.0);
   if (nn == 0) return p0;
   if (nn == 1) return p1;
@@ -171,13 +174,16 @@ std::shared_ptr<polynomial<T>> Chebyshev(int nn)
   while (kk < nn)
   {
     kk++;
-    pn = make_shared<polynomial<T>>(*p1*a1-(*p0));
+    pn = std::make_shared<polynomial<T>>(*p1*a1-(*p0));
     p0 = p1;
     p1 = pn;
   }
   return pn;
 };
 
+//Coefficients for chebyshev expansion of time-evolution operator
+double ChebyshevCoeff(int nn, double alpha);
 
+std::shared_ptr<polynomial<cplx>> ClenshawChebyshevProp(int nn, double alpha)
 
 #endif

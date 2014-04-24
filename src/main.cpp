@@ -13,19 +13,14 @@
 using namespace std;
 int main(int argc, char const *argv[])
 {
-  polynomial<double> p(2);
-  polynomial<double> q(3);
-  p(1) = 2.0;
-  q(1) = -3.0;
-  q(2) = 10;
-  polynomial<double> f = q*p;
-  cout << p << q << f;
   cout << "Hermite Test Case:" << endl;
   for (int ii = 0; ii < 10; ii++)
    cout << *Hermite<int>(ii);
   cout << endl << "Chebyshev Test Case:" << endl;
   for (int ii = 0; ii < 10; ii++)
    cout << *Chebyshev<int>(ii);
+
+
 #if 0
   programInputs IP("inputs.json");
 
