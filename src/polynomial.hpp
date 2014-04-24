@@ -13,18 +13,17 @@ template <typename T>
 class polynomial
 {
 public:
-  int size;
   std::shared_ptr<std::vector<T>> vals;
 
-  polynomial(const int n) : size(n), vals(std::make_shared<std::vector<T>>(n))
+  polynomial(const int n) : vals(std::make_shared<std::vector<T>>(n))
   {
-    fill_n(vals->data(),size,T(0.0));
+    fill_n(vals->data(),size(),T(0.0));
   }
-  polynomial(const polynomial& o) : size(o.size), vals(std::make_shared<std::vector<T>>(o.size))
+  polynomial(const polynomial& o) : vals(std::make_shared<std::vector<T>>(o.size()))
   {
-    std::copy_n(o.vals->data(), size, vals->data());
+    std::copy_n(o.vals->data(), size(), vals->data());
   }
-  // polynomial(polynomial&& o) : size(o.size), vals(std::move(o.vals)){}
+  // polynomial(polynomial&& o) : size()(o.size()), vals(std::move(o.vals)){}
 
   T& element(const int nn)
   {
@@ -46,10 +45,12 @@ public:
     return element(nn);
   }
 
+  const int size() const { return vals->size(); }
+
   polynomial& operator=(const polynomial<T>& o)
   {
-    vals = std::make_shared<std::vector<T>>(o.size);
-    copy_n(&o(0),o.size,&element(0));
+    vals = std::make_shared<std::vector<T>>(o.size());
+    copy_n(&o(0),o.size(),&element(0));
     return *this;
   }
 
@@ -57,10 +58,10 @@ public:
   {
     int len;
     const polynomial<T> *p;
-    size >= o.size ? (p=this, len=size) : (p=&o, len=o.size);
+    size() >= o.size() ? (p=this, len=size()) : (p=&o, len=o.size());
     polynomial<T> out(len);
-    std::transform(vals->data(),vals->data()+std::min(size,o.size),o.vals->data(),out.vals->data(),[](T a, T b){return a+b;});
-    if (size != o.size) std::copy_n(&p->element(std::min(size,o.size)),abs(size-o.size),&out(std::min(size,o.size)));
+    std::transform(vals->data(),vals->data()+std::min(size(),o.size()),o.vals->data(),out.vals->data(),[](T a, T b){return a+b;});
+    if (size() != o.size()) std::copy_n(&p->element(std::min(size(),o.size())),abs(size()-o.size()),&out(std::min(size(),o.size())));
     return out;
   }
 
@@ -73,15 +74,15 @@ public:
   polynomial operator-(const polynomial<T>& o) const
   {
     int len, sign;
-    int min = std::min(size,o.size);
+    int min = std::min(size(),o.size());
     const polynomial<T> *p;
-    size >= o.size ? (p=this, len=size, sign=1) : (p=&o, len=o.size, sign=-1);
+    size() >= o.size() ? (p=this, len=size(), sign=1) : (p=&o, len=o.size(), sign=-1);
     polynomial<T> out(len);
     std::transform(vals->data(),vals->data()+min,o.vals->data(),out.vals->data(),[](T a, T b){return a-b;});
-    if (size != o.size)
+    if (size() != o.size())
     {
-      std::copy_n(&p->element(min),abs(size-o.size),&out(min));
-      if (sign == -1) std::transform(&out(min),&out(min)+abs(size-o.size),&out(min),[](T a){return -1.0*a;});
+      std::copy_n(&p->element(min),abs(size()-o.size()),&out(min));
+      if (sign == -1) std::transform(&out(min),&out(min)+abs(size()-o.size()),&out(min),[](T a){return -1.0*a;});
     }
     return out;
   }
@@ -94,11 +95,11 @@ public:
 
   polynomial operator*(const polynomial<T>& o) const
   {
-    int len = size+o.size-1;
+    int len = size()+o.size()-1;
     polynomial<T> out(len);
-    for (int ii = 0; ii<size; ii++)
+    for (int ii = 0; ii<size(); ii++)
     {
-      for (int jj = 0; jj<o.size; jj++)
+      for (int jj = 0; jj<o.size(); jj++)
         out(ii+jj) += (element(ii)*o(jj));
     }
     return out;
@@ -113,7 +114,7 @@ public:
   template <typename U>
   void scale(const U a)
   {
-    std::for_each(vals->data(), vals->data()+size, [&a](T& p){p*=a;});
+    std::for_each(vals->data(), vals->data()+size(), [&a](T& p){p*=a;});
     return;
   }
 
@@ -122,7 +123,7 @@ public:
 template <typename T>
 std::ostream &operator<<(std::ostream &out, const polynomial<T> &o)
 {
-  for (int ii = 0; ii < o.size; ii++)
+  for (int ii = 0; ii < o.size(); ii++)
     out << o(ii) << "\t";
   out << endl;
   return out;
@@ -145,11 +146,11 @@ std::shared_ptr<polynomial<T>> Hermite(int nn)
   {
     kk++;
     p0->scale(kk-1);
-    *pn = (*p1)*a1-(*p0);
+    pn = make_shared<polynomial<T>>(*p1*a1-(*p0));
     p0 = p1;
     p1 = pn;
   }
   return pn;
-}
+};
 
 #endif
