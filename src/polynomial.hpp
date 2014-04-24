@@ -135,10 +135,10 @@ std::shared_ptr<polynomial<T>> Hermite(int nn)
 {
   std::shared_ptr<polynomial<T>> p0,p1,pn;
   polynomial<T> a1(2);
-  a1(1) = 1;
-  p0 = make_shared<polynomial<T>>(1);
+  a1(1)          = 1;
+  p0             = make_shared<polynomial<T>>(1);
   p0->element(0) = T(1.0);
-  p1 = make_shared<polynomial<T>>(2);
+  p1             = make_shared<polynomial<T>>(2);
   p1->element(1) = T(1.0);
   if (nn == 0) return p0;
   if (nn == 1) return p1;
@@ -160,10 +160,10 @@ std::shared_ptr<polynomial<T>> Chebyshev(int nn)
 {
   std::shared_ptr<polynomial<T>> p0,p1,pn;
   polynomial<T> a1(2);
-  a1(1) = 2;
-  p0 = make_shared<polynomial<T>>(1);
+  a1(1)          = 2;
+  p0             = make_shared<polynomial<T>>(1);
   p0->element(0) = T(1.0);
-  p1 = make_shared<polynomial<T>>(2);
+  p1             = make_shared<polynomial<T>>(2);
   p1->element(1) = T(1.0);
   if (nn == 0) return p0;
   if (nn == 1) return p1;
@@ -177,5 +177,7 @@ std::shared_ptr<polynomial<T>> Chebyshev(int nn)
   }
   return pn;
 };
+
+
 
 #endif
