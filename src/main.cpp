@@ -14,6 +14,7 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
+#if 1
   cout << "Hermite Test Case:" << endl;
   for (int ii = 0; ii < 10; ii++)
    cout << *Hermite<int>(ii);
@@ -21,7 +22,8 @@ int main(int argc, char const *argv[])
   for (int ii = 0; ii < 10; ii++)
    cout << *Chebyshev<int>(ii);
 
-cout << *ClenshawChebyshevProp(10,1.0);
+  cout << *ClenshawChebyshevProp(4,1.0);
+#endif
 
 #if 0
   programInputs IP("inputs.json");
@@ -182,12 +184,54 @@ Determine the junction bounds
 /***********************************************
 Define initial 2D wavefunction
 ************************************************/
+  // for (int ii = 0; ii < IP.nx; ii++)
+  //   for (int jj = 0; jj < IP.ny; jj++)
+  //     MainCalc.wvfxn->element(ii,jj) = wvfxnElectron(MainCalc.xgrid->element(ii),IP)*MoleStates(0,jj);
+  // MainCalc.wvfxn->normalize();
+  // MainCalc.propagateStep(10);
 
-  for (int ii = 0; ii < IP.nx; ii++)
-    for (int jj = 0; jj < IP.ny; jj++)
-      MainCalc.wvfxn->element(ii,jj) = wvfxnElectron(MainCalc.xgrid->element(ii),IP)*MoleStates(0,jj);
-  MainCalc.wvfxn->normalize();
-  MainCalc.propagateStep(10);
 #endif
+
+#if 0
+  ElecCalc.initializeTDSE([&](double a){return ElecParab(a,IP.requil,IP);}, [&](double a){return HKinetic1D(a,IP.m_electron);});
+
+  Array1D<double> TestCheb(ElecCalc.PotenOp->Nx(),0.0,0.0);
+  Array1D<cplx> WorkArray(ElecCalc.PotenOp->Nx(),0.0,0.0);
+
+  for (int ii = 0; ii < ElecCalc.Vgrid->Nx(); ++ii)
+    TestCheb(ii) = real(ElecCalc.Vgrid->element(ii));
+
+  auto result = minmax_element(&TestCheb(0),&TestCheb(0)+TestCheb.Nx());
+  cout << "Min: " << *result.first << endl;
+  cout << "Max: " << *result.second << endl;
+
+  double alpha = 0.5*IP.dt*(*result.second - *result.first);
+  Array1D<cplx> TestChebComp(ElecCalc.PotenOp->Nx(),0.0,0.0);
+
+  double dE = 0.5*(*result.second - *result.first) + *result.first;
+  for (int ii = 0; ii < TestCheb.Nx(); ++ii)
+    TestCheb(ii) -= dE;
+  TestCheb.scale(-2.0/(*result.second - *result.first));
+  for (int ii = 0; ii < ElecCalc.Vgrid->Nx(); ++ii)
+    TestChebComp(ii) = TestCheb(ii);
+  Array1D<cplx> PowerArray(TestChebComp);
+
+  shared_ptr<polynomial<cplx>> ChebCoeffs = ClenshawChebyshevProp(10,alpha);
+  cplx coeff = exp(cplx(0.0,-1.0)*(*result.first + alpha));
+
+  cout << "Using " << ChebCoeffs->vals->size() << " terms in the expansion." << endl;
+  for (int ii = 0; ii < WorkArray.Nx(); ii++)
+    WorkArray(ii) = ChebCoeffs->element(0);
+  for (int ii = 1; ii < ChebCoeffs->vals->size(); ++ii)
+  {
+    cout << WorkArray;
+    WorkArray += PowerArray*ChebCoeffs->element(ii);
+    PowerArray *= TestChebComp;
+  }
+  WorkArray.scale(coeff);
+  // for (int ii = 0; ii < ElecCalc.PotenOp->Nx(); ii++)
+  //   cout << ii << " " << ElecCalc.PotenOp->element(ii) << " " << WorkArray(ii) << endl;
+#endif
+
   return(0);
 }
