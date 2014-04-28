@@ -20,7 +20,10 @@ int main(int argc, char const *argv[])
    cout << *Hermite<int>(ii);
   cout << endl << "Chebyshev Test Case:" << endl;
   for (int ii = 0; ii < 10; ii++)
-   cout << *Chebyshev<int>(ii);
+  {
+    cout << *Chebyshev<int>(ii);
+    cout << Chebyshev<int>(ii)->eval(1.0) << endl << endl;
+  }
  cout << endl;
   cout << *ClenshawChebyshevProp(4,1.0) << endl;
 #endif
@@ -205,18 +208,20 @@ Define initial 2D wavefunction
     TestCheb2(ii) = ElecCalc.Vgrid->element(ii);
 
   auto result = minmax_element(&TestCheb(0),&TestCheb(0)+TestCheb.Nx());
-  cout << "Min: " << *result.first << endl;
-  cout << "Max: " << *result.second << endl;
+  double min  = *result.first;
+  double max  = *result.second;
+  cout << "Min: " << min << endl;
+  cout << "Max: " << max << endl;
 
-  double alpha = 0.5*IP.dt*(*result.second - *result.first);
-  double dE = 0.5*(*result.second - *result.first) + *result.first;
+  double alpha = 0.5*IP.dt*(max - min);
+  double dE    = 0.5*(max + min);
 
   for (int ii = 0; ii < TestCheb.Nx(); ++ii)
-    TestCheb2(ii) -= dE;
-  TestCheb2.scale(-2.0/(*result.second - *result.first));
+    TestCheb2(ii) -= dE; //Need an identity if this is a matrix
+  TestCheb2.scale(2.0/(max-min));
 
-  shared_ptr<polynomial<cplx>> ChebCoeffs = ClenshawChebyshevProp(10 ,alpha);
-  cplx coeff = exp(cplx(0.0,-1.0)*(*result.first + alpha/IP.dt)*IP.dt);
+  shared_ptr<polynomial<cplx>> ChebCoeffs = ClenshawChebyshevProp(10,alpha);
+  cplx coeff = exp(cplx(0.0,-1.0)*(min+alpha));
 
   Array1D<cplx> WorkArray(ElecCalc.PotenOp->Nx(),0.0,0.0);
   cout << "Using " << ChebCoeffs->vals->size() << " terms in the expansion." << endl;
@@ -226,6 +231,7 @@ Define initial 2D wavefunction
 
    for (int ii = 0; ii < ElecCalc.PotenOp->size(); ii++)
      cout << ii << " " << ElecCalc.PotenOp->element(ii) << " " << WorkArray(ii) << endl;
+
 #endif
 
   return(0);

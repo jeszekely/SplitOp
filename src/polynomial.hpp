@@ -124,13 +124,23 @@ public:
 
   Array1D<T> eval(Array1D<T> &o)
   {
-    Array1D<T> out(o*element(0));
+    Array1D<T> out(o);
+    std::fill_n(out.data(),out.size(),element(0));
     Array1D<T> power(o);
     for (int ii = 1; ii<size(); ii++)
     {
       out += (power*element(ii));
       power *= o;
     }
+    return out;
+  }
+
+  template <typename U>
+  U eval(U a)
+  {
+    U out = U(element(0));
+    for (int ii = 1; ii<size(); ii++)
+      out += std::pow(a,ii)*element(ii);
     return out;
   }
 

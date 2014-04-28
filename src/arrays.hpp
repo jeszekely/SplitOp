@@ -42,8 +42,8 @@ public:
 
 //  Access functions
   size_t size() const { return nx; }
-  int step() const { return xstep; }
-  int init() const { return xinit; }
+  double step() const { return xstep; }
+  double init() const { return xinit; }
 
   T* data() { return vals.get(); }
   const T* data() const { return vals.get(); }
