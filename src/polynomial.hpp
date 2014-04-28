@@ -9,6 +9,7 @@
 #include <memory>
 #include <stdexcept>
 #include <vector>
+#include "arrays.hpp"
 
 typedef std::complex<double> cplx;
 
@@ -121,6 +122,18 @@ public:
     return;
   }
 
+  Array1D<T> eval(Array1D<T> &o)
+  {
+    Array1D<T> out(o*element(0));
+    Array1D<T> power(o);
+    for (int ii = 1; ii<size(); ii++)
+    {
+      out += (power*element(ii));
+      power *= o;
+    }
+    return out;
+  }
+
 };
 
 template <typename T>
@@ -185,5 +198,6 @@ std::shared_ptr<polynomial<T>> Chebyshev(int nn)
 double ChebyshevCoeff(int nn, double alpha);
 
 std::shared_ptr<polynomial<cplx>> ClenshawChebyshevProp(int nn, double alpha);
+
 
 #endif
