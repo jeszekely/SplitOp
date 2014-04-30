@@ -17,6 +17,9 @@ extern "C"
   double ddot_(const int*, const double*, const int*, const double*, const int*);
 
   void daxpy_(const int*, const double*, const double*, const int*, double*, const int*);
+
+  void zaxpy_(const int*, const std::complex<double>*, const std::complex<double>*, const int*, const std::complex<double>*, const int*);
+
 }
 
 //LAPACK
@@ -65,6 +68,7 @@ namespace
 
   void daxpy_(const int a, const double b, const double* c, const int d, double* e, const int f) { ::daxpy_(&a,&b,c,&d,e,&f); }
 
+  void zaxpy_(const int a, const std::complex<double> b, const std::complex<double>* c, const int d, std::complex<double>* e, const int f) { ::zaxpy_(&a,&b,c,&d,e,&f); }
 }
 
 #endif

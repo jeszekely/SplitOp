@@ -68,6 +68,11 @@ programInputs::programInputs(std::string fn) : filename(fn)
 	correlation  = IP.get<int>("Outputs.Correlation",0);
 
 	toAU();
+
+  ofstream ss;
+  ss.open("debug.txt");
+  boost::property_tree::write_json(ss,IP);
+  ss.close();
 }
 
 void programInputs::stripComments()

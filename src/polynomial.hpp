@@ -204,10 +204,4 @@ std::shared_ptr<polynomial<T>> Chebyshev(int nn)
   return pn;
 };
 
-//Coefficients for chebyshev expansion of time-evolution operator
-double ChebyshevCoeff(int nn, double alpha);
-
-std::shared_ptr<polynomial<cplx>> ClenshawChebyshevProp(int nn, double alpha);
-
-
 #endif

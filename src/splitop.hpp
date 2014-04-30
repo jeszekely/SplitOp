@@ -1,4 +1,4 @@
-#ifndef SPLIPOP_SPLITOP
+#ifndef SPLITOP_SPLITOP
 #define SPLITOP_SPLITOP
 
 #include "wvfxn.hpp"

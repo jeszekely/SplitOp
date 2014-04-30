@@ -6,16 +6,17 @@ CC = g++
 
 #MKLROOT = /opt/intel/composer_xe_2013_sp1/mkl
 CC = /opt/local/bin/g++-mp-4.8
+#CC = clang++ -I/opt/local/include/
 
-CFLAGS = -O3 -I$(MKLROOT)/include -I$(MKLROOT)/include/fftw -Wall -Wno-sign-compare -Wno-unused-function -Werror -std=c++11 -openmp
+CFLAGS = -O3 -I$(MKLROOT)/include -I$(MKLROOT)/include/fftw -std=c++11 -openmp -Wall -Wno-sign-compare -Wno-unused-function -Werror
 
 BOOST_INC = -I/opt/local/include/boost/
 
-OBJ  =   obj/main.o obj/wvfxn.o obj/input_parser.o obj/splitop.o obj/junction.o obj/polynomial.o
+OBJ  =   obj/main.o obj/wvfxn.o obj/input_parser.o obj/splitop.o obj/junction.o obj/chebyshev.o
 
 LIBS =  -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lmkl_sequential -lpthread -lm
 
-HEADS =  src/arrays.hpp src/wvfxn.hpp src/input_parser.hpp src/splitop.hpp src/junction.hpp src/polynomial.hpp
+HEADS =  src/arrays.hpp src/wvfxn.hpp src/input_parser.hpp src/splitop.hpp src/junction.hpp src/chebyshev.hpp
 BIN  =   SplitOp
 
 RM = rm -f
@@ -44,5 +45,5 @@ obj/splitop.o: src/splitop.cpp
 obj/junction.o: src/junction.cpp
 	$(CC) $(CFLAGS) -c  src/junction.cpp -o obj/junction.o $(BOOST_INC) -I./src
 
-obj/polynomial.o: src/polynomial.cpp
-	$(CC) $(CFLAGS) -c  src/polynomial.cpp -o obj/polynomial.o $(BOOST_INC) -I./src
+obj/chebyshev.o: src/chebyshev.cpp
+	$(CC) $(CFLAGS) -c  src/chebyshev.cpp -o obj/chebyshev.o $(BOOST_INC) -I./src
