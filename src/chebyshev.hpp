@@ -26,7 +26,6 @@ public:
   void initializeTDSE(std::function<double(double)>,std::function<double(double)>);
   void propagateStep();
   void ApplyHNorm(std::shared_ptr<wvfxn1D> W);
-
 };
 
 double ChebyshevCoeff(int nn, double alpha);

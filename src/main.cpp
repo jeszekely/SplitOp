@@ -26,10 +26,10 @@ int main(int argc, char const *argv[])
   Chebyshev1D TestCheb(IP);
   transform(TestCheb.xgrid->data(),TestCheb.xgrid->data()+IP.nx,TestCheb.wvfxn->data(),[&](double x){return cplx(wvfxnElectron(x,IP));});
   TestCheb.wvfxn->normalize();
-  TestCheb.dt *= 10;
+  TestCheb.dt *= 10 ;
   TestCheb.initializeTDSE([&](double a){return Ve(a,IP);}, [&](double a){return HKinetic1D(a,IP.m_electron);});
   TestCheb.propagateStep();
-  printArrays(7000,cout,*TestCalc.xgrid,*TestCalc.Vgrid,*TestCalc.wvfxn,*TestCheb.wvfxn);
+  //printArrays(7000,cout,*TestCalc.xgrid,*TestCalc.Vgrid,*TestCalc.wvfxn,*TestCheb.wvfxn);
   //cout << TestCheb.wvfxn->getNorm() << endl << TestCalc.wvfxn->getNorm() << endl;
 
 #endif
