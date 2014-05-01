@@ -23,7 +23,7 @@ Chebyshev1D::Chebyshev1D(programInputs &IP)
   itpdt    = 1.0;
   simtime  = 0.0;
   runtime  = IP.runtime;
-  polyterms= 20;
+  polyterms= 200;
 
 //Define Arrays
   xgrid = make_shared<Array1D<double>>(nx,xmin,xstep);
@@ -51,31 +51,39 @@ void Chebyshev1D::initializeTDSE(std::function<double(double)> fV, std::function
   Vmax  = *result.second;
   //result = minmax_element(&Tgrid->element(0),&Tgrid->element(0)+Tgrid->Nx());
   Tmin  = 0.0;//*result.first;
-  Tmax  = 2.0*pow(M_PI/xstep,2)*0.5;//*result.second;
+  Tmax  = pow(M_PI/xstep,2)*0.5;//*result.second;
 }
 
 void Chebyshev1D::ApplyHNorm(shared_ptr<wvfxn1D> W)
 {
   //cout << W->getNorm()<< endl;
+  //Store a copy of the wavefunction for later
   wvfxn1D o(*W);
-  double dE = Vmax+Tmax-Vmin-Tmin;
-  o.scale(-1.0*(1.0+2.0*(Vmin+Tmin)/dE));
-
-  //Apply normalized potential operator
   auto W1 = make_shared<wvfxn1D>(*W);
-  transform(W1->data(),W1->data()+nx,Vgrid->data(),W1->data(),multiplies<cplx>());
-
-  //Apply normalized kinetic operator
   fftw_plan forplan  = fftw_plan_dft_1d(nx,reinterpret_cast<fftw_complex*>(W1->data()),reinterpret_cast<fftw_complex*>(W1->data()),FFTW_FORWARD,FFTW_MEASURE);
   fftw_plan backplan = fftw_plan_dft_1d(nx,reinterpret_cast<fftw_complex*>(W1->data()),reinterpret_cast<fftw_complex*>(W1->data()),FFTW_BACKWARD,FFTW_MEASURE);
+  //copy data back to W in case fftw plans modified the data
+  copy_n(o.data(),nx,W1->data());
+  double dE = Vmax+Tmax-Vmin-Tmin;
+  //o.scale(-1.0*(1.0+2.0*(Vmin+Tmin)/dE));
+
+  //Apply normalized potential operator
+  transform(W->data(),W->data()+nx,Vgrid->data(),W->data(),multiplies<cplx>());
+  for (int ii = 0; ii < W->size(); ii++)
+    W->element(ii) -= Vmin;
+  W->scale(2.0/dE);
+
+  //Apply normalized kinetic operator
   fftw_execute(forplan);
   transform(W1->data(),W1->data()+nx,Tgrid->data(),W1->data(),multiplies<cplx>());
   fftw_execute(backplan);
   W1->scale(1.0/double(nx));
+  W1->scale(2.0/dE);
 
-  transform(W->data(),W->data()+nx,W1->data(),W->data(),plus<cplx>());
-  W->scale(2.0/dE);
-  *W += o;
+  //transform(W->data(),W->data()+nx,W1->data(),W->data(),plus<cplx>());
+  zaxpy_(W->size(), cplx(1.0,0.0), W1->data(), 1, W->data(), 1);
+  //*W += o;
+  zaxpy_(W->size(), cplx(-1.0,0.0), o.data(), 1, W->data(), 1);
   fftw_destroy_plan(forplan);
   fftw_destroy_plan(backplan);
 
@@ -109,13 +117,17 @@ void Chebyshev1D::propagateStep()
   {
     ak = ChebyshevCoeff(kk,alpha);
     copy_n(phinm2->data(),nx,phin->data()); //don't need data in phinm2 after this step of the loop
-    *phinm2 = *phinm1;
+    copy_n(phinm1->data(),nx,phinm2->data());
+    //*phinm2 = *phinm1;
     ApplyHNorm(phinm1);
     phinm1->scale(cplx(0.0,-2.0));
     zaxpy_(phin->size(), cplx(1.0,0.0), phinm1->data(), 1, phin->data(), 1);
-    *phinm1 = *phin;
+    copy_n(phin->data(),nx,phinm1->data());
+    //*phinm1 = *phin;
     zaxpy_(wvfxn->size(), ak, phin->data(), 1, wvfxn->data(), 1);
     phin->zero();
+    // cout << kk << " " << wvfxn->getNorm() << " " << ak << " " << ak*ak*phinm1->getNorm() << endl;
+
     // ak = ChebyshevCoeff(kk,alpha);
     // phin = make_shared<wvfxn1D>(*phinm2);
     // phinm2 = make_shared<wvfxn1D>(*phinm1);
