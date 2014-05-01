@@ -110,9 +110,9 @@ void Chebyshev1D::propagateStep()
 
     zaxpy_(wvfxn->size(), ak, phin->data(), 1, wvfxn->data(), 1);
     phin->zero();
-    cout << kk << " " << wvfxn->getNorm() << " " << ak << " " << ak*ak*phinm1->getNorm() << endl;
+    //cout << kk << " " << wvfxn->getNorm() << " " << ak << " " << ak*ak*phinm1->getNorm() << endl;
   }
-  cout << polyterms << endl;
+  //cout << polyterms << endl;
   cplx coeff = exp(cplx(0.0,-1.0)*(Vmin+Tmin+alpha));
   wvfxn->scale(coeff);
 }

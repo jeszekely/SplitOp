@@ -5,7 +5,7 @@
 		"Xmax"   : 300.0,	// x boundary of computational domain (200)
 		"Ymin"   : 5.0,		// y boundary of computational domain
 		"Ymax"   : 25.0,	// y boundary of computational domain
-		"Nx"     : 7000,	// 4096 8192 (7000)  Number of spatial of grid points in the x direction... it's easier if this is an even number
+		"Nx"     : 8192,	// 4096 8192 (7000)  Number of spatial of grid points in the x direction... it's easier if this is an even number
 		"Ny"     : 600,		// (600) Spatial grid points in y direction, also even is better, also change constant in index function
 		"zL"     : 0.0,		// Coordinate where the left electrode ends
 		"zR"     : 24.57,	// Coordinate where the right electrode begins
@@ -14,7 +14,7 @@
 		"Eigen"  : 1		// use harmonic oscillator states (0), use imaginary time
 	},
 	"TimeParameters" : {
-		"Dt"     : 1.0,	    // time step
+		"Dt"     : 0.1,	    // time step
 		"Runtime": 3000.0,	// total simulation time
 		"Output" : 5	    // Print data to a file after this number of time steps
 	},

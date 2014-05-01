@@ -2,7 +2,7 @@
 // #include <cmath>
 // #include <algorithm>
 // #include <vector>
-// #include <ctime>
+#include <ctime>
 #include "wvfxn.hpp"
 #include "input_parser.hpp"
 #include "splitop.hpp"
@@ -14,42 +14,37 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
-#if 1
   programInputs IP("inputs.json");
 
+#if 1
+  clock_t t1, t2;
   SplitOp1D TestCalc(IP);
   transform(TestCalc.xgrid->data(),TestCalc.xgrid->data()+IP.nx,TestCalc.wvfxn->data(),[&](double x){return cplx(wvfxnElectron(x,IP));});
   TestCalc.wvfxn->normalize();
   TestCalc.initializeTDSE([&](double a){return cplx(0.0,-1.0)*absorbingPotential(a,IP)+Ve(a,IP);}, [&](double a){return HKinetic1D(a,IP.m_electron);});
-  TestCalc.propagateStep(10);
+  t1 = clock();
+  TestCalc.propagateStep(100);
+  t2 = clock();
+  double splitopTime = (double(t2) - double(t1))/CLOCKS_PER_SEC;
+  cout << "Split Operator Time:        " << setw(20) << setprecision(8) << splitopTime << endl;
 
   Chebyshev1D TestCheb(IP);
   transform(TestCheb.xgrid->data(),TestCheb.xgrid->data()+IP.nx,TestCheb.wvfxn->data(),[&](double x){return cplx(wvfxnElectron(x,IP));});
   TestCheb.wvfxn->normalize();
-  TestCheb.dt *= 10 ;
+  TestCheb.dt = 10;
   TestCheb.initializeTDSE([&](double a){return Ve(a,IP);}, [&](double a){return HKinetic1D(a,IP.m_electron);});
+  t1 = clock();
   TestCheb.propagateStep();
+  t2 = clock();
+  double chebyTime = (double(t2) - double(t1))/CLOCKS_PER_SEC;
+  cout << "Chebyshev Propagation Time: " << setw(20) << setprecision(8) << chebyTime << endl;
+
   //printArrays(7000,cout,*TestCalc.xgrid,*TestCalc.Vgrid,*TestCalc.wvfxn,*TestCheb.wvfxn);
   //cout << TestCheb.wvfxn->getNorm() << endl << TestCalc.wvfxn->getNorm() << endl;
 
 #endif
 
 #if 0
-  cout << "Hermite Test Case:" << endl;
-  for (int ii = 0; ii < 10; ii++)
-   cout << *Hermite<int>(ii);
-  cout << endl << "Chebyshev Test Case:" << endl;
-  for (int ii = 0; ii < 10; ii++)
-  {
-    cout << *Chebyshev<int>(ii);
-    cout << Chebyshev<int>(ii)->eval(1.0) << endl << endl;
-  }
- cout << endl;
-  cout << *ClenshawChebyshevProp(4,1.0) << endl;
-#endif
-
-#if 0
-  programInputs IP("inputs.json");
 
 //Set up basics for the 2D calculation
   SplitOp2D MainCalc(IP);
@@ -212,45 +207,6 @@ Define initial 2D wavefunction
   //     MainCalc.wvfxn->element(ii,jj) = wvfxnElectron(MainCalc.xgrid->element(ii),IP)*MoleStates(0,jj);
   // MainCalc.wvfxn->normalize();
   // MainCalc.propagateStep(10);
-
-#endif
-
-#if 0
-  ElecCalc.initializeTDSE([&](double a){return ElecParab(a,IP.requil,IP);}, [&](double a){return HKinetic1D(a,IP.m_electron);});
-
-  Array1D<double> TestCheb(ElecCalc.PotenOp->Nx(),0.0,0.0);
-  Array1D<cplx> TestCheb2(ElecCalc.PotenOp->Nx(),0.0,0.0);
-
-//get min/max for chebychev calc
-  for (int ii = 0; ii < ElecCalc.Vgrid->Nx(); ++ii)
-    TestCheb(ii) = real(ElecCalc.Vgrid->element(ii));
-  for (int ii = 0; ii < ElecCalc.Vgrid->Nx(); ++ii)
-    TestCheb2(ii) = ElecCalc.Vgrid->element(ii);
-
-  auto result = minmax_element(&TestCheb(0),&TestCheb(0)+TestCheb.Nx());
-  double min  = *result.first;
-  double max  = *result.second;
-  cout << "Min: " << min << endl;
-  cout << "Max: " << max << endl;
-
-  double alpha = 0.5*IP.dt*(max - min);
-  double dE    = 0.5*(max + min);
-
-  for (int ii = 0; ii < TestCheb.Nx(); ++ii)
-    TestCheb2(ii) -= dE; //Need an identity if this is a matrix
-  TestCheb2.scale(2.0/(max-min));
-
-  shared_ptr<polynomial<cplx>> ChebCoeffs = ClenshawChebyshevProp(10,alpha);
-  cplx coeff = exp(cplx(0.0,-1.0)*(min+alpha));
-
-  Array1D<cplx> WorkArray(ElecCalc.PotenOp->Nx(),0.0,0.0);
-  cout << "Using " << ChebCoeffs->vals->size() << " terms in the expansion." << endl;
-
-  WorkArray = ChebCoeffs->eval(TestCheb2);
-  WorkArray.scale(coeff);
-
-   for (int ii = 0; ii < ElecCalc.PotenOp->size(); ii++)
-     cout << ii << " " << ElecCalc.PotenOp->element(ii) << " " << WorkArray(ii) << endl;
 
 #endif
 
