@@ -12,11 +12,11 @@ CFLAGS = -O3 -I$(MKLROOT)/include -I$(MKLROOT)/include/fftw -std=c++11 -openmp -
 
 BOOST_INC = -I/opt/local/include/boost/
 
-OBJ  =   obj/main.o obj/wvfxn.o obj/input_parser.o obj/splitop.o obj/junction.o obj/chebyshev.o
+OBJ  =   obj/main.o obj/wvfxn.o obj/input_parser.o obj/splitop.o obj/junction.o obj/chebyshev.o obj/surrogate.o
 
 LIBS =  -lmkl_intel_lp64 -lmkl_intel_thread -lmkl_core -lmkl_sequential -lpthread -lm
 
-HEADS =  src/arrays.hpp src/wvfxn.hpp src/input_parser.hpp src/splitop.hpp src/junction.hpp src/chebyshev.hpp
+HEADS =  src/arrays.hpp src/wvfxn.hpp src/input_parser.hpp src/splitop.hpp src/junction.hpp src/chebyshev.hpp src/surrogate.hpp
 BIN  =   SplitOp
 
 RM = rm -f
@@ -47,3 +47,6 @@ obj/junction.o: src/junction.cpp
 
 obj/chebyshev.o: src/chebyshev.cpp
 	$(CC) $(CFLAGS) -c  src/chebyshev.cpp -o obj/chebyshev.o $(BOOST_INC) -I./src
+
+obj/surrogate.o: src/surrogate.cpp
+	$(CC) $(CFLAGS) -c  src/surrogate.cpp -o obj/surrogate.o $(BOOST_INC) -I./src

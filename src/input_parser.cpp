@@ -23,10 +23,10 @@ programInputs::programInputs(std::string fn) : filename(fn)
 
 	dt      = IP.get<double>("TimeParameters.Dt",1.0);
 	runtime = IP.get<double>("TimeParameters.Runtime",1000.0);
-	output  =IP.get<double>("TimeParameters.Output",5.0);
+	output  = IP.get<double>("TimeParameters.Output",5.0);
 
 	hbar       = IP.get<double>("PhysicalParameters.hbar",1.0);
-	echarge		 = IP.get<double>("PhysicalParameters.echarge",-1.0);
+	echarge    = IP.get<double>("PhysicalParameters.echarge",-1.0);
 	m_electron = IP.get<double>("PhysicalParameters.M_electron",1.0);
 	m_C60      = IP.get<double>("PhysicalParameters.M_C60",2.59e6);
 	elecvel    = IP.get<double>("PhysicalParameters.ElecVel",0.488756);
@@ -44,7 +44,7 @@ programInputs::programInputs(std::string fn) : filename(fn)
 	sigma      = IP.get<double>("PhysicalParameters.Sigma",1.0);
 	del        = IP.get<double>("PhysicalParameters.Del",6.0);
 	cconst     = IP.get<double>("PhysicalParameters.CConst",1.0);
-	alpha 		 = 4.0;
+	alpha      = 4.0;
 
 	potential    = IP.get<int>("Outputs.Potential",0);
 	wvfxninit    = IP.get<int>("Outputs.WvfxnInit",0);
@@ -89,7 +89,7 @@ void programInputs::stripComments()
 	int found, found2;
 	while (getline(inputfile,line))
 	{
-		found = line.find('/');
+		found  = line.find('/');
 		found2 = line.find('/', found+1);
 		if (found != line.npos && found2 == found+1)
 			inputcopy << line.erase(found, line.length()) << endl;

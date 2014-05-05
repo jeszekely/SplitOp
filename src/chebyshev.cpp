@@ -22,7 +22,6 @@ Chebyshev1D::Chebyshev1D(programInputs &IP)
   itpdt    = 1.0;
   simtime  = 0.0;
   runtime  = IP.runtime;
-  polyterms= 10;
 
 //Define Arrays
   xgrid = make_shared<Array1D<double>>(nx,xmin,xstep);
@@ -59,7 +58,7 @@ void Chebyshev1D::ApplyHNorm(shared_ptr<wvfxn1D> W)
   auto W1            = make_shared<wvfxn1D>(*W);
   fftw_plan forplan  = fftw_plan_dft_1d(nx,reinterpret_cast<fftw_complex*>(W1->data()),reinterpret_cast<fftw_complex*>(W1->data()),FFTW_FORWARD,FFTW_MEASURE);
   fftw_plan backplan = fftw_plan_dft_1d(nx,reinterpret_cast<fftw_complex*>(W1->data()),reinterpret_cast<fftw_complex*>(W1->data()),FFTW_BACKWARD,FFTW_MEASURE);
-  //copy data back to W in case fftw plans modified the data
+  //copy data back to W in case fftw plans modify the data
   copy_n(o.data(),nx,W1->data());
   double dE          = Vmax+Tmax-Vmin-Tmin;
 
