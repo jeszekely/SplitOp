@@ -1,5 +1,6 @@
 #include "surrogate.hpp"
 #include "chebyshev.hpp"
+#include "utilities.hpp"
 
 using namespace std;
 
@@ -143,7 +144,6 @@ void SplitOp1DArray::initializeSurrogate()
       }
     }
   }
-
   //print some of the coupling matrix elements
   ofstream CoupingFile;
     CoupingFile.open("output_data/CoupingResults.txt");
@@ -160,36 +160,32 @@ void SplitOp1DArray::initializeSurrogate()
   //Exponentiate the interaction matrices
   for (int ii = 0; ii < xgrid->size(); ii++)
     exponentiateCheb(*HInteractions[ii],dt);
-
 }
 
+void SplitOp1DArray::propagateStep(int ii)
+{
+  //Apply kinetic operators
+  for (fftw_plan &plan : forplanArray)
+    fftw_execute(plan);
+  for (int ii = 0; ii<n; ii++)
+    transform(&wvfxn->element(0,ii),&wvfxn->element(0,ii)+nx,KinetOp->data(),&wvfxn->element(0,ii),multiplies<cplx>());
+  for (fftw_plan &plan : backplanArray)
+    fftw_execute(plan);
+  wvfxn->scale(1.0/double(nx));
 
+  //Apply potential/interaction operators
+  for (int ii = 0; ii < xgrid->size(); ii++)
+    zgemv_("N",n,n,cplx(1.0,0.0),HInteractions[ii]->data(),n,&wvfxn->element(ii,0),xgrid->size(),cplx(0.0,0.0),&wvfxn->element(ii,0),xgrid->size());
 
-
-
-
-
-
-
-
-
-
-// class SplitOp1DArray
-// {
-
-//   void propagateStep(int ii = 1);
-
-// };
-
-
-
-// void SplitOp1D::initializeTDSE(std::function<cplx(double)> fV, std::function<double(double)> fT)
-// {
-//   transform(xgrid->data(),xgrid->data()+nx,Vgrid->data(),fV);
-//   transform(pgrid->data(),pgrid->data()+nx,Tgrid->data(),fT);
-//   transform(Vgrid->data(),Vgrid->data()+nx,PotenOp->data(),[&](cplx a){return exp(cplx(0.0,-1.0)*a*dt);});
-//   transform(Tgrid->data(),Tgrid->data()+nx,KinetOp->data(),[&](double a){return exp(cplx(0.0,-0.5)*a*dt);});
-// }
+  //Apply kinetic operators
+  for (fftw_plan &plan : forplanArray)
+    fftw_execute(plan);
+  for (int ii = 0; ii<n; ii++)
+    transform(&wvfxn->element(0,ii),&wvfxn->element(0,ii)+nx,KinetOp->data(),&wvfxn->element(0,ii),multiplies<cplx>());
+  for (fftw_plan &plan : backplanArray)
+    fftw_execute(plan);
+  wvfxn->scale(1.0/double(nx));
+}
 
 // void SplitOp1D::propagateStep(int nn)
 // {

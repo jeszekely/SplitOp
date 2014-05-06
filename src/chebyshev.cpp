@@ -81,8 +81,8 @@ void Chebyshev1D::ApplyHNorm(shared_ptr<wvfxn1D> W)
 
 void Chebyshev1D::propagateStep()
 {
-  double alpha = 0.5*dt*(Vmax+Tmax-Vmin-Tmin);
-  shared_ptr<wvfxn1D> phi1 = make_shared<wvfxn1D>(*wvfxn);
+  double alpha               = 0.5*dt*(Vmax+Tmax-Vmin-Tmin);
+  shared_ptr<wvfxn1D> phi1   = make_shared<wvfxn1D>(*wvfxn);
   ApplyHNorm(phi1);
   phi1->scale(cplx(0.0,-1.0));
   shared_ptr<wvfxn1D> phinm1 = make_shared<wvfxn1D>(*phi1);
@@ -119,8 +119,8 @@ void Chebyshev1D::propagateStep()
 void exponentiateCheb(matrixComp &H, double dt)
 {
   assert (H.nr() == H.nc());
-  double min = 0.0;
-  double max = 0.0;
+  double min     = 0.0;
+  double max     = 0.0;
   for (int ii = 0; ii < H.nr(); ii++)
   {
     if (min > real(H(ii,ii))) min = real(H(ii,ii));
@@ -132,7 +132,7 @@ void exponentiateCheb(matrixComp &H, double dt)
   matrixComp Hn(H);
   Hn.makeIdentity();
   Hn.scale(min-0.5*dE);
-  H -= Hn;
+  H         -= Hn;
   H.scale(2.0/dE);
 
 //Set up matricies for expansion
@@ -149,21 +149,21 @@ void exponentiateCheb(matrixComp &H, double dt)
 
   H.makeIdentity();
   H.scale(ChebyshevCoeff(0,alpha));
-  ak = ChebyshevCoeff(1,alpha);
-  H += phi1*ak;
+  ak            = ChebyshevCoeff(1,alpha);
+  H             += phi1*ak;
   int polyterms = 10+int(dE*dt*0.5);
 
   for (int kk = 2; kk <= polyterms; kk++)
   {
-    ak = ChebyshevCoeff(kk,alpha);
-    phin = phinm2;
+    ak     = ChebyshevCoeff(kk,alpha);
+    phin   = phinm2;
     phinm2 = phinm1;
 
     phinm1 *= Hn;
     phinm1.scale(cplx(0.0,-2.0));
-    phin += phinm1;
+    phin   += phinm1;
     phinm1 = phin;
-    H += phin*ak;
+    H      += phin*ak;
     phin.zero();
   }
   H.scale(exp(cplx(0.0,-1.0)*(min+alpha)));

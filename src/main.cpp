@@ -16,6 +16,11 @@ int main(int argc, char const *argv[])
 #if 1
   SplitOp1DArray TestSurr("inputs.json");
   TestSurr.initializeSurrogate();
+  for (int ii = 0; ii < 100; ii++)
+  {
+    cout << ii << endl;
+    TestSurr.propagateStep();
+  }
 
 #endif
 

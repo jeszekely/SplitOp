@@ -55,7 +55,7 @@ public:
   ~SplitOp1DArray();
 
   void initializeSurrogate();
-  //void propagateStep(int ii = 1);
+  void propagateStep(int ii = 1);
 
 };
 
