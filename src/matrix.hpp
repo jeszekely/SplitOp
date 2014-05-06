@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <complex>
 
 typedef std::complex<double> cplx;
 
@@ -212,6 +213,41 @@ std::ostream &operator<<(std::ostream &out, const matrixBase <T> &o)
 
 template <typename T> unsigned int matrixBase<T>::memSize = 0;
 
+
+
 //class matrixComplex
+
+class matrixComp : public matrixBase<cplx>
+{
+public:
+  matrixComp(const int nr, const int nc);
+  matrixComp(const matrixComp&);
+  matrixComp(matrixComp&&);
+
+//Matrix-Matrix operations
+  matrixComp& operator=(const matrixComp&);
+  matrixComp operator*(const matrixComp&) const;
+  matrixComp& operator*=(const matrixComp&);
+  matrixComp operator+(const matrixComp&) const;
+  matrixComp& operator+=(const matrixComp&);
+  matrixComp operator-(const matrixComp&) const;
+  matrixComp& operator-=(const matrixComp&);
+  // matrixComp operator|(const matrixComp&) const;
+  // matrixComp operator^(const matrixComp&) const;
+
+//Scalar-Matrix Operations
+//Note: binary scalar operations only work as rhs operators at the moment
+  matrixComp operator*(const cplx&) const;
+  matrixComp operator/(const cplx&) const;
+  matrixComp& operator*=(const cplx&);
+  matrixComp& operator/=(const cplx&);
+
+  // double dot_product(const matrixComp& o) const;
+  // double norm() const;
+  // double rms() const;
+  // double variance() const;
+
+};
+
 
 #endif

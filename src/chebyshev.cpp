@@ -115,3 +115,58 @@ void Chebyshev1D::propagateStep()
   cplx coeff = exp(cplx(0.0,-1.0)*(Vmin+Tmin+alpha));
   wvfxn->scale(coeff);
 }
+
+void exponentiateCheb(matrixComp &H, double dt)
+{
+  assert (H.nr() == H.nc());
+  double min = 0.0;
+  double max = 0.0;
+  for (int ii = 0; ii < H.nr(); ii++)
+  {
+    if (min > real(H(ii,ii))) min = real(H(ii,ii));
+    if (max < real(H(ii,ii))) max = real(H(ii,ii));
+  }
+
+  //Form normalized H
+  double dE = max - min;
+  matrixComp Hn(H);
+  Hn.makeIdentity();
+  Hn.scale(min-0.5*dE);
+  H -= Hn;
+  H.scale(2.0/dE);
+
+//Set up matricies for expansion
+  double alpha = 0.5*dt*dE;
+  matrixComp phi1(Hn);
+  phi1.scale(cplx(0.0,-1.0));
+  Hn = H;
+
+  matrixComp phinm1(phi1);
+  matrixComp phinm2(H);
+  matrixComp phin(H);
+  phin.zero();
+  double ak;
+
+  H.makeIdentity();
+  H.scale(ChebyshevCoeff(0,alpha));
+  ak = ChebyshevCoeff(1,alpha);
+  H += phi1*ak;
+  int polyterms = 10+int(dE*dt*0.5);
+
+  for (int kk = 2; kk <= polyterms; kk++)
+  {
+    ak = ChebyshevCoeff(kk,alpha);
+    phin = phinm2;
+    phinm2 = phinm1;
+
+    phinm1 *= Hn;
+    phinm1.scale(cplx(0.0,-2.0));
+    phin += phinm1;
+    phinm1 = phin;
+    H += phin*ak;
+    phin.zero();
+  }
+  H.scale(exp(cplx(0.0,-1.0)*(min+alpha)));
+}
+
+

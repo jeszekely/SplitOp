@@ -5,6 +5,7 @@
 #include "input_parser.hpp"
 #include <boost/math/special_functions/bessel.hpp>
 #include "fftw3.h"
+#include "matrix.hpp"
 #include <cmath>
 #include <complex>
 
@@ -29,5 +30,9 @@ public:
 };
 
 double ChebyshevCoeff(int nn, double alpha);
+
+//given a Hamiltonian H, exponentiates to a time evolution operator with a chebychev expansion
+void exponentiateCheb(matrixComp &H, double dt);
+
 
 #endif

@@ -4,9 +4,9 @@
 		"Xmin"   : -450.0,	// x boundary of computational domain (-450)
 		"Xmax"   : 300.0,	// x boundary of computational domain (200)
 		"Ymin"   : 5.0,		// y boundary of computational domain
-		"Ymax"   : 25.0,	// y boundary of computational domain
+		"Ymax"   : 30.0,	// y boundary of computational domain
 		"Nx"     : 8192,	// 4096 8192 (7000)  Number of spatial of grid points in the x direction... it's easier if this is an even number
-		"Ny"     : 600,		// (600) Spatial grid points in y direction, also even is better, also change constant in index function
+		"Ny"     : 1064,		// (600) Spatial grid points in y direction, also even is better, also change constant in index function
 		"zL"     : 0.0,		// Coordinate where the left electrode ends
 		"zR"     : 24.57,	// Coordinate where the right electrode begins
 		"Nphonon": 5,		// number of phonon states to calculate
@@ -22,7 +22,7 @@
 		"hbar"      : 1.0,	    // Planck's Constant, obviously
 		"echarge"	: -1.0,		// Electron Charge
 		"M_electron": 1.0,	    // Mass of the electron (au), 9.11e-31 kg
-		"M_C60"     : 2.59e4,	// 50.0 2.59e4 Mass of C60 (au) (default is 2.59e6), 2.36e-24 kg
+		"M_C60"     : 100,	// 50.0 2.59e4 Mass of C60 (au) (default is 2.59e6), 2.36e-24 kg
 		"ElecVel"   : 0.488756,	// 0.635817 (OffRes), 0.590878 or 0.488756 (OnRes), 0.507206 (Excite Res 1&2)  velocity of incident electron, k-vector
 		"EAffin"    : -2.56,	// Electron affinity of the C60 molecule
 		"LBarrier"  : 120.0,	// Size of left (refl) absorbing region

@@ -1,7 +1,3 @@
-// #include <iostream>
-// #include <cmath>
-// #include <algorithm>
-// #include <vector>
 #include <ctime>
 #include "wvfxn.hpp"
 #include "input_parser.hpp"
@@ -9,6 +5,7 @@
 #include "junction.hpp"
 #include "polynomial.hpp"
 #include "chebyshev.hpp"
+#include "surrogate.hpp"
 
 using namespace std;
 
@@ -17,6 +14,12 @@ int main(int argc, char const *argv[])
   programInputs IP("inputs.json");
 
 #if 1
+  SplitOp1DArray TestSurr("inputs.json");
+  TestSurr.initializeSurrogate();
+
+#endif
+
+#if 0
   clock_t t1, t2;
   SplitOp1D TestCalc(IP);
   transform(TestCalc.xgrid->data(),TestCalc.xgrid->data()+IP.nx,TestCalc.wvfxn->data(),[&](double x){return cplx(wvfxnElectron(x,IP));});

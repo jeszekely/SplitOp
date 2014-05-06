@@ -3,9 +3,13 @@
 
 #include <complex>
 #include <assert.h>
+#include "splitop.hpp"
+#include "junction.hpp"
 #include "arrays.hpp"
 #include "input_parser.hpp"
 #include "wvfxn.hpp"
+#include "matrix.hpp"
+#include <fftw3.h>
 
 typedef std::complex<double> cplx;
 
@@ -31,15 +35,13 @@ public:
   double m();
 };
 
-
-
 class SplitOp1DArray
 {
 protected:
-  size_t nx;
+  size_t nx, n;
   int nthreads;
   std::vector<fftw_plan> forplanArray, backplanArray;
-  std::vector<std::make_shared<Array2D<cplx>>> HInteractions;
+  std::vector<std::shared_ptr<matrixComp>> HInteractions;
 
 public:
   double xmin, xmax, xstep, pstep;
@@ -47,11 +49,13 @@ public:
   std::shared_ptr<Array1D<double>> xgrid, pgrid, Tgrid;
   std::shared_ptr<Array1D<cplx>> Vgrid, KinetOp, PotenOp;
   std::shared_ptr<wvfxn1DArray> wvfxn;
+  programInputs Ins;
 
-  SplitOp1DArray(programInputs &IP);
+  SplitOp1DArray(std::string filename);
   ~SplitOp1DArray();
 
-  void propagateStep(int ii = 1);
+  void initializeSurrogate();
+  //void propagateStep(int ii = 1);
 
 };
 

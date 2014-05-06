@@ -229,30 +229,30 @@ void matrixReal::ax_plus_y(const double a, matrixReal &o)
 Complex Matrix Class
 **************************************/
 
-// matrixComp::matrixComp(const int nr, const int nc) : matrixBase<cplx>(nr,nc){}
-// matrixComp::matrixComp(const matrixComp& o) : matrixBase<cplx>(o){}
-// matrixComp::matrixComp(matrixComp&& o ) : matrixBase<cplx>(std::move(o)){}
+matrixComp::matrixComp(const int nr, const int nc) : matrixBase<cplx>(nr,nc){}
+matrixComp::matrixComp(const matrixComp& o) : matrixBase<cplx>(o){}
+matrixComp::matrixComp(matrixComp&& o ) : matrixBase<cplx>(std::move(o)){}
 
-// matrixComp& matrixComp::operator=(const matrixComp& o)
-// {
-//   assert(nrows == o.nrows && ncols == o.ncols);
-//   copy_n(o.data(), o.size(), data());
-//   return *this;
-// }
+matrixComp& matrixComp::operator=(const matrixComp& o)
+{
+  assert(nrows == o.nrows && ncols == o.ncols);
+  copy_n(o.data(), o.size(), data());
+  return *this;
+}
 
-// matrixComp& matrixComp::operator*=(const matrixComp& o)
-// {
-//   *this = *this * o;
-//   return *this;
-// }
+matrixComp& matrixComp::operator*=(const matrixComp& o)
+{
+  *this = *this * o;
+  return *this;
+}
 
-// matrixComp matrixComp::operator*(const matrixComp& o) const
-// {
-//   assert(ncols == o.nrows);
-//   matrixComp out(nrows, o.ncols);
-//   zgemm_("N","N", nrows, o.ncols, o.nrows, 1.0, data(), nrows, o.data(), o.nrows, 0.0, out.data(), nrows);
-//   return out;
-// }
+matrixComp matrixComp::operator*(const matrixComp& o) const
+{
+  assert(ncols == o.nrows);
+  matrixComp out(nrows, o.ncols);
+  zgemm3m_("N","N", nrows, o.ncols, o.nrows, cplx(1.0), data(), nrows, o.data(), o.nrows, cplx(0.0), out.data(), nrows);
+  return out;
+}
 
 // //vector dot product
 // double matrixReal::operator%(const matrixReal& o) const
@@ -261,11 +261,11 @@ Complex Matrix Class
 //   return ddot_(nrows, data(), 1, o.data(), 1);
 // }
 
-// //Matrix multiplication, left matrix is transposed
-// matrixReal matrixReal::operator|(const matrixReal& o) const
+//Matrix multiplication, left matrix is transposed
+// matrixComp matrixComp::operator|(const matrixComp& o) const
 // {
 //   assert(nrows == o.nrows);
-//   matrixReal out(ncols, o.ncols);
+//   matrixComp out(ncols, o.ncols);
 //   dgemm_("T","N", ncols, o.ncols, o.nrows, 1.0, data(), nrows, o.data(), o.nrows, 0.0, out.data(), ncols);
 //   return out;
 // }
@@ -279,59 +279,59 @@ Complex Matrix Class
 //   return out;
 // }
 
-// matrixReal matrixReal:: operator+(const matrixReal& o) const
-// {
-//   assert(ncols == o.ncols && nrows == o.nrows);
-//   matrixReal out(nrows, o.ncols);
-//   transform(data(), data()+size(), o.data(), out.data(), plus<double>());
-//   return out;
-// }
+matrixComp matrixComp:: operator+(const matrixComp& o) const
+{
+  assert(ncols == o.ncols && nrows == o.nrows);
+  matrixComp out(nrows, o.ncols);
+  transform(data(), data()+size(), o.data(), out.data(), plus<cplx>());
+  return out;
+}
 
-// matrixReal& matrixReal::operator+=(const matrixReal& o)
-// {
-//   *this = *this + o;
-//   return *this;
-// }
+matrixComp& matrixComp::operator+=(const matrixComp& o)
+{
+  *this = *this + o;
+  return *this;
+}
 
-// matrixReal matrixReal::operator-(const matrixReal& o) const
-// {
-//   assert(ncols == o.ncols && nrows == o.nrows);
-//   matrixReal out(nrows, o.ncols);
-//   transform(data(), data()+size(), o.data(), out.data(), minus<double>());
-//   return out;
-// }
+matrixComp matrixComp::operator-(const matrixComp& o) const
+{
+  assert(ncols == o.ncols && nrows == o.nrows);
+  matrixComp out(nrows, o.ncols);
+  transform(data(), data()+size(), o.data(), out.data(), minus<cplx>());
+  return out;
+}
 
-// matrixReal& matrixReal::operator-=(const matrixReal& o)
-// {
-//   *this = *this - o;
-//   return *this;
-// }
+matrixComp& matrixComp::operator-=(const matrixComp& o)
+{
+  *this = *this - o;
+  return *this;
+}
 
-// matrixReal matrixReal::operator*(const double& a) const
-// {
-//   matrixReal out(*this);
-//   out *= a;
-//   return out;
-// }
+matrixComp matrixComp::operator*(const cplx& a) const
+{
+  matrixComp out(*this);
+  out *= a;
+  return out;
+}
 
-// matrixReal& matrixReal::operator*=(const double& a)
-// {
-//   scale(a);
-//   return *this;
-// }
+matrixComp& matrixComp::operator*=(const cplx& a)
+{
+  scale(a);
+  return *this;
+}
 
-// matrixReal matrixReal::operator/(const double& a) const
-// {
-//   matrixReal out(*this);
-//   out /= a;
-//   return out;
-// }
+matrixComp matrixComp::operator/(const cplx& a) const
+{
+  matrixComp out(*this);
+  out /= a;
+  return out;
+}
 
-// matrixReal& matrixReal::operator/=(const double& a)
-// {
-//   scale(1.0/a);
-//   return *this;
-// }
+matrixComp& matrixComp::operator/=(const cplx& a)
+{
+  scale(1.0/a);
+  return *this;
+}
 
 // double matrixReal::dot_product(const matrixReal& o) const {
 //   assert(size() == o.size());
