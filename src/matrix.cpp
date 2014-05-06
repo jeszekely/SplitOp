@@ -1,5 +1,4 @@
 #include "matrix.hpp"
-#include "utilities.hpp"
 
 using namespace std;
 
@@ -355,10 +354,10 @@ void matrixComp::getEigvals(double* eigVals)
   assert (nrows == ncols);
   int info;
   int lwork = -1;
-  double wkopt;
   std::unique_ptr <double[]> rwork (new double [nrows*3+2]);
-  zheev_("N", "U", nrows, data(), nrows, eigVals, &wkopt, lwork, rwork.get(), info);
-  lwork = int(wkopt);
+  vector<cplx> wkopt (1,cplx(0.0));
+  zheev_("N", "U", nrows, data(), nrows, eigVals, wkopt.data(), lwork, rwork.get(), info);
+  lwork = int(real(wkopt[0]));
   std::unique_ptr <cplx[]> work (new cplx [lwork]);
   zheev_("N", "U", nrows, data(), nrows, eigVals, work.get(), lwork, rwork.get(), info);
   if (info > 0)

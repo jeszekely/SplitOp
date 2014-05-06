@@ -18,7 +18,7 @@ int main(int argc, char const *argv[])
   TestSurr.initializeSurrogate();
   transform(TestSurr.xgrid->data(),TestSurr.xgrid->data()+IP.nx,&TestSurr.wvfxn->element(0,0),[&](double x){return cplx(wvfxnElectron(x,IP));});
   TestSurr.wvfxn->normalize(0);
-  for (int ii = 0; ii < 2000; ii++)
+  for (int ii = 0; ii < 200; ii++)
   {
     cout << ii << " " << TestSurr.wvfxn->getNorm(0) + TestSurr.wvfxn->getNorm(1) + TestSurr.wvfxn->getNorm(2) << endl;
     TestSurr.propagateStep();

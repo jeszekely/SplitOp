@@ -3,7 +3,7 @@
 
 #include <complex>
 #include <memory>
-#include "mkl.h"
+//#include "mkl.h"
 
 //BLAS
 extern "C"
@@ -13,6 +13,8 @@ extern "C"
     const double* beta, double* c, const int* ldc);
 
   void dsyev_(const char*, const char*, const int*, double*, const int*, double*, double*, const int*, int*);
+
+  void zheev_(const char*, const char*, const int*, std::complex<double>*, const int*, double*, std::complex<double>*, const int*, double*, int*);
 
   double ddot_(const int*, const double*, const int*, const double*, const int*);
 
@@ -34,11 +36,9 @@ extern "C"
 //LAPACK
 extern "C"
 {
-  void zheev_(const char*, const char*, const int*, std::complex<double>*, const int*, double*, std::complex<double>*, const int*, double*, int*);
+  void dgesvd_(const char*, const char*, const int*, const int*, double*, const int*, double*, double*, const int*, double*, const int*,  double*, const int*, int*);
 
- void dgesvd_(const char*, const char*, const int*, const int*, double*, const int*, double*, double*, const int*, double*, const int*,  double*, const int*, int*);
-
- //void dsyevr_(const char*, const char*, const char*, const int*, double*, const int*, const double*, const double*, const int*, const int*, const double*,  int*, double*, double*, const int*, int*, double*, int*, double*, int*, int*);
+  void dsyevr_(const char*, const char*, const char*, const int*, double*, const int*, const double*, const double*, const int*, const int*, const double*,  int*, double*, double*, const int*, int*, double*, int*, int*, int*, int*);
 }
 
 //DMRG interface, shamelessly lifted from BAGEL's src/util/f77.h file
@@ -68,7 +68,7 @@ namespace
 
   void mkl_domatcopy_(const char* ordering, const char* trans, const int r, const int c, const double alpha,
                     const double* A, const int nr, double* B, const int nc)
-                    {mkl_domatcopy(*ordering,*trans,r,c,alpha,A,nr,B,nc);}
+                    {mkl_domatcopy_(ordering,trans,r,c,alpha,A,nr,B,nc);}
 
   double ddot_(const int a, const double* b, const int c, const double* d, const int e) { return ::ddot_(&a,b,&c,d,&e);}
 
@@ -112,7 +112,6 @@ namespace
   void zheev_(const char* a, const char* b, const int c, std::unique_ptr<std::complex<double> []>& d, const int e,
              std::unique_ptr<double []>& f, std::unique_ptr<std::complex<double> []>& g, const int h, std::unique_ptr<double[]>& i, int& j)
              { ::zheev_(a,b,&c,d.get(),&e,f.get(),g.get(),&h,i.get(),&j); }
-
 }
 
 #endif

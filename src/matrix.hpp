@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <complex>
+#include "utilities.hpp"
 
 typedef std::complex<double> cplx;
 
