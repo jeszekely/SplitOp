@@ -26,12 +26,16 @@ extern "C"
 
   void zgemv_(const char*, const int*, const int*, const std::complex<double>*, const std::complex<double>*, const int*, const std::complex<double>*, const int*,
              const std::complex<double>*, std::complex<double>*, const int*);
+  int izamax_(const int*, const std::complex<double>*, const int*);
 
+  int izamin_(const int*, const std::complex<double>*, const int*);
 }
 
 //LAPACK
 extern "C"
 {
+  void zheev_(const char*, const char*, const int*, std::complex<double>*, const int*, double*, std::complex<double>*, const int*, double*, int*);
+
  void dgesvd_(const char*, const char*, const int*, const int*, double*, const int*, double*, double*, const int*, double*, const int*,  double*, const int*, int*);
 
  //void dsyevr_(const char*, const char*, const char*, const int*, double*, const int*, const double*, const double*, const int*, const int*, const double*,  int*, double*, double*, const int*, int*, double*, int*, double*, int*, int*);
@@ -95,6 +99,20 @@ namespace
   void zgemv_(const char* a, const int b, const int c, const std::complex<double> d, const std::unique_ptr<std::complex<double> []>& e, const int f,
              const std::unique_ptr<std::complex<double> []>& g, const int h, const std::complex<double> i, std::unique_ptr<std::complex<double> []>& j, const int k)
              { ::zgemv_(a,&b,&c,&d,e.get(),&f,g.get(),&h,&i,j.get(),&k); }
+
+  int izamax_(const int n, const std::complex<double> *x, const int inc)
+              { return ::izamax_(&n,x,&inc);}
+
+  int izamin_(const int n, const std::complex<double> *x, const int inc)
+              { return ::izamin_(&n,x,&inc);}
+
+  void zheev_(const char* a, const char* b, const int c, std::complex<double>* d, const int e, double* f, std::complex<double>* g, const int h, double* i, int& j)
+             { ::zheev_(a,b,&c,d,&e,f,g,&h,i,&j); }
+
+  void zheev_(const char* a, const char* b, const int c, std::unique_ptr<std::complex<double> []>& d, const int e,
+             std::unique_ptr<double []>& f, std::unique_ptr<std::complex<double> []>& g, const int h, std::unique_ptr<double[]>& i, int& j)
+             { ::zheev_(a,b,&c,d.get(),&e,f.get(),g.get(),&h,i.get(),&j); }
+
 }
 
 #endif

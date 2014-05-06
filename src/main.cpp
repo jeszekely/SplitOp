@@ -16,11 +16,15 @@ int main(int argc, char const *argv[])
 #if 1
   SplitOp1DArray TestSurr("inputs.json");
   TestSurr.initializeSurrogate();
-  for (int ii = 0; ii < 100; ii++)
+  transform(TestSurr.xgrid->data(),TestSurr.xgrid->data()+IP.nx,&TestSurr.wvfxn->element(0,0),[&](double x){return cplx(wvfxnElectron(x,IP));});
+  TestSurr.wvfxn->normalize(0);
+  for (int ii = 0; ii < 2000; ii++)
   {
-    cout << ii << endl;
+    cout << ii << " " << TestSurr.wvfxn->getNorm(0) + TestSurr.wvfxn->getNorm(1) + TestSurr.wvfxn->getNorm(2) << endl;
     TestSurr.propagateStep();
   }
+  TestSurr.printWavefunction("output_data/FinalWavefunction.txt");
+
 
 #endif
 

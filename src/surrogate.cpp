@@ -85,6 +85,9 @@ SplitOp1DArray::~SplitOp1DArray()
 
 void SplitOp1DArray::initializeSurrogate()
 {
+  transform(pgrid->data(),pgrid->data()+nx,Tgrid->data(),[&](double a){return HKinetic1D(a,Ins.m_electron);});
+  transform(Tgrid->data(),Tgrid->data()+nx,KinetOp->data(),[&](double a){return exp(cplx(0.0,-0.5)*a*Ins.dt);});
+
   for (int ii = 0; ii < nx; ii++)
     HInteractions.push_back(make_shared<matrixComp>(n,n));
 
@@ -162,7 +165,7 @@ void SplitOp1DArray::initializeSurrogate()
     exponentiateCheb(*HInteractions[ii],dt);
 }
 
-void SplitOp1DArray::propagateStep(int ii)
+void SplitOp1DArray::propagateStep(int nn)
 {
   //Apply kinetic operators
   for (fftw_plan &plan : forplanArray)
@@ -175,7 +178,12 @@ void SplitOp1DArray::propagateStep(int ii)
 
   //Apply potential/interaction operators
   for (int ii = 0; ii < xgrid->size(); ii++)
-    zgemv_("N",n,n,cplx(1.0,0.0),HInteractions[ii]->data(),n,&wvfxn->element(ii,0),xgrid->size(),cplx(0.0,0.0),&wvfxn->element(ii,0),xgrid->size());
+  {
+    matrixComp scratch(n,1);
+    for (int jj = 0; jj < n; jj++)
+      scratch(jj,0) = wvfxn->element(ii,jj);
+    zgemv_("N",n,n,cplx(1.0,0.0),HInteractions[ii]->data(),n,scratch.data(),1,cplx(0.0,0.0),&wvfxn->element(ii,0),xgrid->size());
+  }
 
   //Apply kinetic operators
   for (fftw_plan &plan : forplanArray)
@@ -184,36 +192,23 @@ void SplitOp1DArray::propagateStep(int ii)
     transform(&wvfxn->element(0,ii),&wvfxn->element(0,ii)+nx,KinetOp->data(),&wvfxn->element(0,ii),multiplies<cplx>());
   for (fftw_plan &plan : backplanArray)
     fftw_execute(plan);
+
   wvfxn->scale(1.0/double(nx));
+
+  simtime += nn*dt;
 }
 
-// void SplitOp1D::propagateStep(int nn)
-// {
-//   //Apply kinetic operator
-//   fftw_execute(forplan);
-//   transform(wvfxn->data(),wvfxn->data()+nx,KinetOp->data(),wvfxn->data(),multiplies<cplx>());
-//   fftw_execute(backplan);
-//   wvfxn->scale(1.0/double(nx));
+void SplitOp1DArray::printWavefunction(std::string filename)
+{
+  ofstream out;
+  out.open(filename);
+  for (int ii = 0; ii < nx; ii++)
+  {
+    out << xgrid->element(ii) << " ";
+    for (int jj = 0; jj < n; jj++)
+      out << abs(wvfxn->element(ii,jj)) << " ";
+    out << endl;
+  }
+  out.close();
+}
 
-//   //Apply potential operator
-//   transform(wvfxn->data(),wvfxn->data()+nx,PotenOp->data(),wvfxn->data(),multiplies<cplx>());
-
-//   if (nn > 1)
-//   {
-//     for (int ii = 0; ii < nn-1; ii++)
-//     {
-//       fftw_execute(forplan);
-//       transform(wvfxn->data(),wvfxn->data()+nx,KinetOp->data(),wvfxn->data(),[](cplx a, cplx b){return a*pow(b,2);});
-//       fftw_execute(backplan);
-//       wvfxn->scale(1.0/nx);
-//       transform(wvfxn->data(),wvfxn->data()+nx,PotenOp->data(),wvfxn->data(),multiplies<cplx>());
-//     }
-//   }
-//   //Apply kinetic operator
-//   fftw_execute(forplan);
-//   transform(wvfxn->data(),wvfxn->data()+nx,KinetOp->data(),wvfxn->data(),multiplies<cplx>());
-//   fftw_execute(backplan);
-//   wvfxn->scale(1.0/double(nx));
-
-//   simtime += nn*dt;
-// }

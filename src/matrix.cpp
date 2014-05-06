@@ -350,20 +350,21 @@ matrixComp& matrixComp::operator/=(const cplx& a)
 //   return dot_product(*this)/static_cast<double>(size());
 // }
 
-// void matrixReal::diagonalize(double* eigVals)
-// {
-//   assert (nrows == ncols);
-//   int info;
-//   int lwork = -1;
-//   double wkopt;
-//   dsyev_("V", "U", nrows, data(), nrows, eigVals, &wkopt, lwork, info);
-//   lwork = int(wkopt);
-//   std::unique_ptr <double[]> work (new double [lwork]);
-//   dsyev_("V", "U", nrows, data(), nrows, eigVals, work.get(), lwork, info);
-//   if (info > 0)
-//     throw std::runtime_error("Unable to diagonalize matrix");
-//   return;
-// }
+void matrixComp::getEigvals(double* eigVals)
+{
+  assert (nrows == ncols);
+  int info;
+  int lwork = -1;
+  double wkopt;
+  std::unique_ptr <double[]> rwork (new double [nrows*3+2]);
+  zheev_("N", "U", nrows, data(), nrows, eigVals, &wkopt, lwork, rwork.get(), info);
+  lwork = int(wkopt);
+  std::unique_ptr <cplx[]> work (new cplx [lwork]);
+  zheev_("N", "U", nrows, data(), nrows, eigVals, work.get(), lwork, rwork.get(), info);
+  if (info > 0)
+    throw std::runtime_error("Unable to diagonalize matrix");
+  return;
+}
 
 
 // void matrixReal::diagonalize(double* eigVals, bool getLowEigVal, int keepNum)

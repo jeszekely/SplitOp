@@ -56,7 +56,7 @@ public:
 
   void initializeSurrogate();
   void propagateStep(int ii = 1);
-
+  void printWavefunction(std::string filename);
 };
 
 #endif

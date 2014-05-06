@@ -234,6 +234,8 @@ public:
   matrixComp& operator-=(const matrixComp&);
   // matrixComp operator|(const matrixComp&) const;
   // matrixComp operator^(const matrixComp&) const;
+  void getEigvals(double* eigVals);
+
 
 //Scalar-Matrix Operations
 //Note: binary scalar operations only work as rhs operators at the moment

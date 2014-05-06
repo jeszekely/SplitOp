@@ -118,14 +118,23 @@ void Chebyshev1D::propagateStep()
 
 void exponentiateCheb(matrixComp &H, double dt)
 {
-  assert (H.nr() == H.nc());
-  double min     = 0.0;
-  double max     = 0.0;
-  for (int ii = 0; ii < H.nr(); ii++)
-  {
-    if (min > real(H(ii,ii))) min = real(H(ii,ii));
-    if (max < real(H(ii,ii))) max = real(H(ii,ii));
-  }
+  vector<double> HEvals(H.nr(),0.0);
+  H.getEigvals(HEvals.data());
+  double min = HEvals[0];
+  double max = HEvals[H.nr()-1];
+  // maxloc = izamax_(H.size(),H.data(),1);
+  // minloc = izamin_(H.size(),H.data(),1);
+  // double max = abs(*(H.data() + maxloc - 1));
+  // double min = abs(*(H.data() + minloc - 1));
+  //cout << scientific << minloc << " " << min << " " << maxloc << " " << max << endl;
+  //auto result = minmax(H.data(),H.data()+H.size());
+  //min = result.first;
+  //max = result.second;
+  // for (int ii = 0; ii < H.nr(); ii++)
+  // {
+  //   if (min > real(H(ii,ii))) min = real(H(ii,ii));
+  //   if (max < real(H(ii,ii))) max = real(H(ii,ii));
+  // }
 
   //Form normalized H
   double dE = max - min;
