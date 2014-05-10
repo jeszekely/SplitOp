@@ -190,9 +190,9 @@ tuple<shared_ptr<matrixReal>, shared_ptr<matrixReal>> matrixReal::svd(vector<dou
   auto vT = make_shared<matrixReal>(ncols, ncols);
 
   int lwork = -1;
-  int info = 0;
+  int info  = 0;
   dgesvd_("A","A", nrows, ncols, data(), nrows, s.data(), u->data(), nrows, vT->data(), ncols, s.data(), lwork, info);
-  lwork = s[0];
+  lwork     = s[0];
   if (lwork <= 0)
       throw runtime_error("dgesvd failed allocating lwork value");
   unique_ptr<double[]> work(new double[lwork]);

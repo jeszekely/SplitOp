@@ -29,7 +29,7 @@ void wvfxn1DArray::normalize(const int nn)
 
 double wvfxn1DArray::flux(const int nn, const int xx)
 {
-  cplx psi_star = conj(element(nn,xx));
+  cplx psi_star  = conj(element(nn,xx));
   cplx psi_deriv = cplx(0,-1.0)*deriv_16_x(nn,xx);
   return real(psi_deriv*psi_star*hbar/mass);
 }
@@ -140,8 +140,8 @@ void SplitOp1DArray::initializeSurrogate()
     {
       for (int kk = 0; kk < jj; kk++)
       {
-        Scratch = *PhononStates[kk] | *PhononStates[jj];
-        Scratch *= HInt;
+        Scratch                           = *PhononStates[kk] | *PhononStates[jj];
+        Scratch                           *= HInt;
         HInteractions[ii]->element(jj,kk) = Scratch.integrate_rect();
         HInteractions[ii]->element(kk,jj) = HInteractions[ii]->element(jj,kk);
       }

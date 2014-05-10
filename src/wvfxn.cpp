@@ -31,7 +31,7 @@ void wvfxn1D::normalize()
 
 double wvfxn1D::flux(const int xx)
 {
-  cplx psi_star = conj(vals[xx]);
+  cplx psi_star  = conj(vals[xx]);
   cplx psi_deriv = cplx(0,-1.0)*deriv_16(xx);
   return real(psi_deriv*psi_star*hbar/mass);
 }
@@ -72,8 +72,8 @@ double wvfxn2D::flux_x(const int xx)
   Array1D <double> probcurr(ny,0.0,real(ystep));
   for (int ii = 0; ii < ny; ii++)
   {
-    psi_star = conj(element(xx,ii));
-    psi_deriv = cplx(0.0,-1.0)*deriv_16_x(xx,ii);
+    psi_star     = conj(element(xx,ii));
+    psi_deriv    = cplx(0.0,-1.0)*deriv_16_x(xx,ii);
     probcurr(ii) = real(psi_deriv*psi_star);
   }
   return (mass1/hbar)*probcurr.integrate_rect();
@@ -84,8 +84,8 @@ double wvfxn2D::flux_y(const int yy)
   Array1D <double> probcurr(nx,0.0,real(xstep));
   for (int ii = 0; ii < nx; ii++)
   {
-    psi_star = conj(element(ii,yy));
-    psi_deriv = cplx(0.0,-1.0)*deriv_16_y(ii,yy);
+    psi_star     = conj(element(ii,yy));
+    psi_deriv    = cplx(0.0,-1.0)*deriv_16_y(ii,yy);
     probcurr(ii) = real(psi_deriv*psi_star);
   }
   return (mass2/hbar)*probcurr.integrate_rect();

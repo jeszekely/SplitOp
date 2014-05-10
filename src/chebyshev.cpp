@@ -122,19 +122,6 @@ void exponentiateCheb(matrixComp &H, double dt)
   H.getEigvals(HEvals.data());
   double min = HEvals[0];
   double max = HEvals[H.nr()-1];
-  // maxloc = izamax_(H.size(),H.data(),1);
-  // minloc = izamin_(H.size(),H.data(),1);
-  // double max = abs(*(H.data() + maxloc - 1));
-  // double min = abs(*(H.data() + minloc - 1));
-  //cout << scientific << minloc << " " << min << " " << maxloc << " " << max << endl;
-  //auto result = minmax(H.data(),H.data()+H.size());
-  //min = result.first;
-  //max = result.second;
-  // for (int ii = 0; ii < H.nr(); ii++)
-  // {
-  //   if (min > real(H(ii,ii))) min = real(H(ii,ii));
-  //   if (max < real(H(ii,ii))) max = real(H(ii,ii));
-  // }
 
   //Form normalized H
   double dE = max - min;
@@ -148,7 +135,7 @@ void exponentiateCheb(matrixComp &H, double dt)
   double alpha = 0.5*dt*dE;
   matrixComp phi1(Hn);
   phi1.scale(cplx(0.0,-1.0));
-  Hn = H;
+  Hn           = H;
 
   matrixComp phinm1(phi1);
   matrixComp phinm2(H);

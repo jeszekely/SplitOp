@@ -310,8 +310,8 @@ double SplitOp2D::getEnergy()
     }
   }
   kinet = (*wvfxn | kinet);
-  KE = real(kinet.integrate_rect()*pow(wvfxn->hb(),2));
+  KE    = real(kinet.integrate_rect()*pow(wvfxn->hb(),2));
   poten = (*wvfxn | poten);
-  PE = real(poten.integrate_rect());
+  PE    = real(poten.integrate_rect());
   return KE+PE;
 }

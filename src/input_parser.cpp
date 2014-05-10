@@ -69,8 +69,9 @@ programInputs::programInputs(std::string fn) : filename(fn)
 
 	toAU();
 
+  //Copies the json data to a file to check for debugging
   ofstream ss;
-  ss.open("debug.txt");
+  ss.open("output_data/inputs_check.json");
   boost::property_tree::write_json(ss,IP);
   ss.close();
 }
