@@ -1,3 +1,11 @@
+/**
+ * \file junction.cpp
+ * \brief Junction specific routines
+ *
+ * \author Joshua E.\ Szekely
+ * \date May 2014
+ */
+
 #include "junction.hpp"
 
 using namespace std;
@@ -5,7 +13,7 @@ using namespace std;
 double HKinetic1D(double pp, double mass)
 {
   return pp*pp/(2.0*mass);
-} ///Kinetic energy operator for one dimension
+}
 
 double HKinetic2D(double pp, double qq, double mass1, double mass2)
 {

@@ -13,10 +13,13 @@
 #include <stdexcept>
 #include <vector>
 
-/** \brief  A simple one dimensional array class
-  * A one dimensional array class allowing templating of the data type. This object keeps track of the memory used to all arrays created. Member variables include the size, step sizes and initialization values for array operations, and a pointer to the data structure.
-  */
-
+/**
+ * @brief A simple one dimensional array class
+ * @details  A one dimensional array class allowing templating of the data type.
+ * This object keeps track of the memory used to all arrays created.
+ * Member variables include the size, step sizes and initialization values
+ * for array operations, and a pointer to the data structure.
+ */
 template <typename T> class Array1D
 {
 protected:
@@ -26,55 +29,63 @@ protected:
   std::unique_ptr<T[]> vals;
 
 public:
-//  Constructor
+  ///Basic class constructor
   Array1D(const int NX, T xi, T xs) : nx(NX), xinit(xi), xstep(xs), vals(std::unique_ptr<T[]>(new T[NX]))
   {
     zero();
     memSize += sizeof(T)*size(); //number of bytes allocated to instance of class
-  } ///Basic class constructor
-//  Copy Constructor
+  }
+  ///Copy constructor
   Array1D(const Array1D& o) : nx(o.nx), xinit(o.xinit), xstep(o.xstep), vals(std::unique_ptr<T[]>(new T[nx]))
   {
     std::copy_n(o.vals.get(), nx, vals.get());
     memSize += sizeof(T)*size(); //number of bytes allocated to instance of class
   }
-  //  Move Constructor
+  ///Move constructor
   Array1D(Array1D&& o) : nx(o.nx), xinit(o.xinit), xstep(o.xstep), vals(std::move(o.vals)) {o.nx = 0;};
-
-//  Destructor
+  ///Destructor
   ~Array1D(){memSize -= sizeof(T)*size();} //number of bytes allocated to instance of class
 
 //  Access functions
+  ///Returns total number of elements
   size_t size() const { return nx; }
+  ///Returns xstep
   double step() const { return xstep; }
+  ///Returns xinit
   double init() const { return xinit; }
 
+  ///Returns pointer to the beginning of the data array
   T* data() { return vals.get(); }
+  ///Overload of data()
   const T* data() const { return vals.get(); }
 
-//  Fill with zeroes
+  ///Fills array with zeros
   void zero() {std::fill_n(vals.get(), nx, T(0.0));}
-
-//  Fill with a number
+  ///Fill array with value "a"
   void fill(T a) {std::fill_n(vals.get(), nx, a);}
-
+  ///Returns 1st array dimension, same as size() for 1D array
 	size_t Nx() const {return nx;}
 
+  ///Fills matrix with random values in range [-1,1]
   void random()
   {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_real_distribution<T> dis(-2, 2);
+    std::uniform_real_distribution<T> dis(-1, 1);
     std::generate_n(vals.get(), nx, [&dis, &gen](){return dis(gen);});
   }
 
+  /**
+  *   \brief Fills array with linearly spaced values
+  *
+  * Fills the entire array. The \f$ii^{th}\f$ element of the arrays becomes \f$ xinit+ii*xstep \f$.
+  */
   void fill_array()
   {
   	for (int ii = 0; ii < nx; ii++)
   		element(ii) = ii*xstep + xinit;
   	return;
   }
-
 //  Accessor functions
   T& element(const int nn)
   {
