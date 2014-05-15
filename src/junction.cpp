@@ -5,7 +5,7 @@ using namespace std;
 double HKinetic1D(double pp, double mass)
 {
   return pp*pp/(2.0*mass);
-}
+} ///Kinetic energy operator for one dimension
 
 double HKinetic2D(double pp, double qq, double mass1, double mass2)
 {

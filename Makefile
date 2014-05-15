@@ -2,7 +2,7 @@
 # Author J. Szekely
 # Makefile
 
-CC = g++
+#CC = g++
 
 #MKLROOT = /opt/intel/composer_xe_2013_sp1/mkl
 CC = /opt/local/bin/g++-mp-4.8

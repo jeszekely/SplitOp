@@ -1,5 +1,5 @@
-SplitOp
+Quantum Dynamics
 =======
 Created by J.E.Szekely
-Wavefunction propagator using the split operator technique. Relies on the iniparser, soon to be changed to the boost json library.
-Uses fftw routines for the numeric Fourier transforms. 
+
+This set of classes and functions allows computation of quantum dynamics using split operator and alternatively Chebyshev propagation. Other included files contain functions specific to various projects including 2D electron-phonon dynamics and surrogate Hamiltonian calculations. All codes compile using gcc4.8 and require the Boost libraries, BLAS/LAPACK routines, and C++11.

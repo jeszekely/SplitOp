@@ -13,6 +13,10 @@
 #include <stdexcept>
 #include <vector>
 
+/** \brief  A simple one dimensional array class
+  * A one dimensional array class allowing templating of the data type. This object keeps track of the memory used to all arrays created. Member variables include the size, step sizes and initialization values for array operations, and a pointer to the data structure.
+  */
+
 template <typename T> class Array1D
 {
 protected:
@@ -27,7 +31,7 @@ public:
   {
     zero();
     memSize += sizeof(T)*size(); //number of bytes allocated to instance of class
-  }
+  } ///Basic class constructor
 //  Copy Constructor
   Array1D(const Array1D& o) : nx(o.nx), xinit(o.xinit), xstep(o.xstep), vals(std::unique_ptr<T[]>(new T[nx]))
   {

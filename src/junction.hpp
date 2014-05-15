@@ -1,3 +1,13 @@
+/**
+ * \file junction.hpp
+ * \brief Junction specific routines
+ *
+ * A set of functions for junction dynamics. Some are very
+ * general and extend to problems outside of the junction such
+ * as the absorbing boundaries and kinetic energy operators.
+ * \author Joshua E. Szekely
+ */
+
 #ifndef SPLITOP_JUNCTION
 #define SPLITOP_JUNCTION
 
@@ -6,9 +16,13 @@
 
 #include "junction.hpp"
 
+/** @junction.hpp */
+/**
+*/
+
 using namespace std;
 
-double HKinetic1D(double pp, double mass);
+double HKinetic1D(double pp, double mass); /// \f$ \frac{\hbar^2}{2m} \frac{\partial^2}{\partial z^2}\f$
 double HKinetic2D(double pp, double qq, double mass1, double mass2);
 double VM (double ZZ, programInputs &IP);
 double WL (double zz, programInputs &IP);
