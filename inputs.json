@@ -14,7 +14,7 @@
 		"Eigen"  : 1		// use harmonic oscillator states (0), use imaginary time
 	},
 	"TimeParameters" : {
-		"Dt"     : 1.0,	    // time step
+		"Dt"     : 0.5,	    // time step
 		"Runtime": 3000.0,	// total simulation time
 		"Output" : 5	    // Print data to a file after this number of time steps
 	},

@@ -18,7 +18,7 @@ int main(int argc, char const *argv[])
   TestSurr.initializeSurrogate();
   transform(TestSurr.xgrid->data(),TestSurr.xgrid->data()+IP.nx,&TestSurr.wvfxn->element(0,0),[&](double x){return cplx(wvfxnElectron(x,IP));});
   TestSurr.wvfxn->normalize(0);
-  for (int ii = 0; ii < 200; ii++)
+  for (int ii = 0; ii < 800; ii++)
   {
     cout << ii << " " << TestSurr.wvfxn->getNorm(0) + TestSurr.wvfxn->getNorm(1) + TestSurr.wvfxn->getNorm(2) << endl;
     TestSurr.propagateStep();
@@ -214,11 +214,11 @@ Determine the junction bounds
 /***********************************************
 Define initial 2D wavefunction
 ************************************************/
-  // for (int ii = 0; ii < IP.nx; ii++)
-  //   for (int jj = 0; jj < IP.ny; jj++)
-  //     MainCalc.wvfxn->element(ii,jj) = wvfxnElectron(MainCalc.xgrid->element(ii),IP)*MoleStates(0,jj);
-  // MainCalc.wvfxn->normalize();
-  // MainCalc.propagateStep(10);
+  for (int ii = 0; ii < IP.nx; ii++)
+    for (int jj = 0; jj < IP.ny; jj++)
+      MainCalc.wvfxn->element(ii,jj) = wvfxnElectron(MainCalc.xgrid->element(ii),IP)*MoleStates(0,jj);
+  MainCalc.wvfxn->normalize();
+  MainCalc.propagateStep(10);
 
 #endif
 
