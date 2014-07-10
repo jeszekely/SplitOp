@@ -20,7 +20,7 @@ int main(int argc, char const *argv[])
   TestSurr.wvfxn->normalize(0);
   for (int ii = 0; ii < 800; ii++)
   {
-    cout << ii << " " << TestSurr.wvfxn->getNorm(0) + TestSurr.wvfxn->getNorm(1) + TestSurr.wvfxn->getNorm(2) << endl;
+    cout << ii << " " << TestSurr.wvfxn->getNorm(0) << " " << TestSurr.wvfxn->getNorm(1) << " " << TestSurr.wvfxn->getNorm(2) << endl;
     TestSurr.propagateStep();
   }
   TestSurr.printWavefunction("output_data/FinalWavefunction.txt");
